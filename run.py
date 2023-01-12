@@ -1,10 +1,5 @@
 # -*- encoding: utf-8 -*-
-"""
-Copyright (c) 2019 - present AppSeed.us
-"""
-
 import os
-# from   flask_migrate import Migrate
 from   flask_minify  import Minify
 from   sys import exit
 
