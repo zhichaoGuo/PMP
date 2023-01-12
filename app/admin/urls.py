@@ -1,0 +1,5 @@
+from app.admin.views import admin, ExcitationView, ModelView, GlobalView
+
+admin.add_url_rule('/admin_global', view_func=GlobalView.as_view('global'))
+admin.add_url_rule('/admin_model', view_func=ModelView.as_view('model'))
+admin.add_url_rule('/admin_excitation', view_func=ExcitationView.as_view('excitation'))
