@@ -75,6 +75,24 @@ class DataBaseUtils:
 
     @staticmethod
     def add_way(model_id, way_name, start_time):
+        # try:
         new = Way(model_id=model_id, name=way_name, start_time=start_time)
         db.session.add(new)
+        db.session.commit()
+
+    @staticmethod
+    def get_global_settings():
+        settings = Global.query.all()
+        setting = {}
+        for s in settings:
+            setting[s.key] = s.value
+        return setting
+
+    @staticmethod
+    def set_global_settings(settings):
+        for s in settings:
+            new_setting = Global.query.filter_by(key=s).first()
+            if new_setting:
+                new_setting.value = settings[s]
+                db.session.add_all([new_setting])
         db.session.commit()

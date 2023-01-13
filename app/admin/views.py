@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, make_response
+from flask import Blueprint, render_template, request, make_response, redirect, url_for
 from flask.views import MethodView
 
 from app.models import DataBaseUtils
@@ -12,7 +12,13 @@ class GlobalView(MethodView):
     """
 
     def get(self):
-        return render_template('admin/global.html', segment='admin_global')
+        data = DataBaseUtils.get_global_settings()
+        return render_template('admin/global.html', segment='admin_global',data=data)
+
+    def post(self):
+        data = request.get_json()
+        DataBaseUtils.set_global_settings(data)
+        return redirect(url_for('admin.global'))
 
 
 class ModelView(MethodView):
@@ -36,3 +42,9 @@ class ExcitationView(MethodView):
 
     def get(self):
         return render_template('admin/excitation.html', segment='admin_excitation')
+
+    def post(self):
+        data = request.get_json()
+        # states_code, message = \
+        DataBaseUtils.add_way(data['model_id'], data['way_name'], data['start_time'])
+        return data
