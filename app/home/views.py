@@ -25,7 +25,6 @@ class LogoutView(MethodView):
     登出页面
     """
     def get(self):
-        login_form = LoginForm(request.form)
         return redirect(url_for('home.login'))
 
 

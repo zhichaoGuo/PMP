@@ -1,5 +1,6 @@
 import datetime
 
+import sqlalchemy
 from werkzeug.security import generate_password_hash
 
 from app import db
@@ -52,3 +53,28 @@ class Detail(db.Model):  # 销售明细表
     sale_price = db.Column(db.Float, nullable=False)
     sale_time = db.Column(db.DateTime(), default=datetime.datetime.now())
     sale_number = db.Column(db.Integer, nullable=False)
+
+
+class Global(db.Model):  # 全局配置表
+    __tablename__ = 'Global'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    key = db.Column(db.String(64), unique=True, nullable=False)
+    value = db.Column(db.String(64), nullable=False)
+
+
+class DataBaseUtils:
+    @staticmethod
+    def add_model(model_name):
+        try:
+            new = Model(name=model_name)
+            db.session.add(new)
+            db.session.commit()
+            return 200, 'OK'
+        except sqlalchemy.exc.IntegrityError:
+            return 400, '型号已存在!'
+
+    @staticmethod
+    def add_way(model_id, way_name, start_time):
+        new = Way(model_id=model_id, name=way_name, start_time=start_time)
+        db.session.add(new)
+        db.session.commit()
