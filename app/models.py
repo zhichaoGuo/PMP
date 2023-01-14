@@ -51,7 +51,7 @@ class Detail(db.Model):  # 销售明细表
     record_id = db.Column(db.Integer, nullable=False)
     model_id = db.Column(db.Integer, nullable=False)
     sale_price = db.Column(db.Float, nullable=False)
-    sale_time = db.Column(db.DateTime(), default=datetime.datetime.now())
+    sale_time = db.Column(db.Date, default=datetime.date.today())
     sale_number = db.Column(db.Integer, nullable=False)
 
 
@@ -79,11 +79,41 @@ class DataBaseUtils:
         return all
 
     @staticmethod
+    def delete_model(id):  # Todo: 删除型号下所有的激励策略及节点
+        try:
+            delete = Model.query.filter_by(id=id).first()
+            if delete:
+                db.session.delete(delete)
+                db.session.commit()
+                return 200, 'OK'
+            else:
+                return 404, 'Not found'
+        except Exception as e:
+            return 400, e
+
+    @staticmethod
     def add_way(model_id, way_name, start_time):
-        # try:
-        new = Way(model_id=model_id, name=way_name, start_time=start_time)
-        db.session.add(new)
-        db.session.commit()
+        try:
+            new = Way(model_id=model_id, name=way_name, start_time=start_time)
+            db.session.add(new)
+            db.session.commit()
+            return 200, 'OK'
+        except sqlalchemy.exc.IntegrityError:
+            return 400, '策略名已存在!'
+
+    @staticmethod
+    def get_way(model_id=None):
+        try:
+            if model_id:
+                way = Way.query.filter_by(model_id=model_id).all()
+            else:
+                way = Way.query.all()
+            if way:
+                return way
+            else:
+                return False
+        except Exception as e:
+            return False
 
     @staticmethod
     def get_global_settings():
@@ -100,4 +130,13 @@ class DataBaseUtils:
             if new_setting:
                 new_setting.value = settings[s]
                 db.session.add_all([new_setting])
+            else:
+                new_setting = Global(key=s,value=settings[s])
+                db.session.add(new_setting)
         db.session.commit()
+
+    @staticmethod
+    def datepicker_2_datetime(picker:str):
+        'picker = dd/mm/yyyy'
+        time = picker.split('/')
+        return datetime.date(year=int(time[2]),month=int(time[1]),day=int(time[0]))
