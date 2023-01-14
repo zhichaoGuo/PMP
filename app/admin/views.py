@@ -27,11 +27,12 @@ class ModelView(MethodView):
     """
 
     def get(self):
-        return render_template('admin/model.html', segment='admin_model')
+        data = DataBaseUtils.get_models()
+        return render_template('admin/model.html', segment='admin_model',data=data)
 
     def post(self):
         data = request.get_json()
-        states_code, message = DataBaseUtils.add_model(data['name'])
+        states_code, message = DataBaseUtils.add_model(data['model'])
         return make_response(message), states_code
 
 

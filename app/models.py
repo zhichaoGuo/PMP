@@ -74,6 +74,11 @@ class DataBaseUtils:
             return 400, '型号已存在!'
 
     @staticmethod
+    def get_models():
+        all = Model.query.all()
+        return all
+
+    @staticmethod
     def add_way(model_id, way_name, start_time):
         # try:
         new = Way(model_id=model_id, name=way_name, start_time=start_time)
