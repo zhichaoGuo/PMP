@@ -63,26 +63,36 @@
                           <form action="{{url_for('admin.excitation')}}" class="mt-4" method="post">
                               <!-- Form -->
                               <div class="form-group mb-4">
-                                  <label for="name">策略名称</label>
+                                  <label for="m_model">激励型号</label>
                                   <div class="input-group">
-                                      <span class="input-group-text" id="basic-addon1">
+                                      <span class="input-group-text" id="basic-addon0">
                                           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pc-display-horizontal" viewBox="0 0 16 16"><path d="M1.5 0A1.5 1.5 0 0 0 0 1.5v7A1.5 1.5 0 0 0 1.5 10H6v1H1a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3a1 1 0 0 0-1-1h-5v-1h4.5A1.5 1.5 0 0 0 16 8.5v-7A1.5 1.5 0 0 0 14.5 0h-13Zm0 1h13a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-.5.5h-13a.5.5 0 0 1-.5-.5v-7a.5.5 0 0 1 .5-.5ZM12 12.5a.5.5 0 1 1 1 0 .5.5 0 0 1-1 0Zm2 0a.5.5 0 1 1 1 0 .5.5 0 0 1-1 0ZM1.5 12h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1 0-1ZM1 14.25a.25.25 0 0 1 .25-.25h5.5a.25.25 0 1 1 0 .5h-5.5a.25.25 0 0 1-.25-.25Z"/></svg>
                                       </span>
-                                      <input type="text" class="form-control" placeholder="example：2022年度激励-V50" id="name" name="name" autofocus required>
+                                      <input class="form-control" id="m_model" type="text" placeholder="" value="" readonly>
                                   </div>
                               </div>
                               <div class="form-group mb-4">
-                                  <label for="start_time">策略起始时间</label>
+                                  <label for="m_name">策略名称</label>
+                                  <div class="input-group">
+                                      <span class="input-group-text" id="basic-addon1">
+                                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-textarea-t" viewBox="0 0 16 16"><path d="M1.5 2.5A1.5 1.5 0 0 1 3 1h10a1.5 1.5 0 0 1 1.5 1.5v3.563a2 2 0 0 1 0 3.874V13.5A1.5 1.5 0 0 1 13 15H3a1.5 1.5 0 0 1-1.5-1.5V9.937a2 2 0 0 1 0-3.874V2.5zm1 3.563a2 2 0 0 1 0 3.874V13.5a.5.5 0 0 0 .5.5h10a.5.5 0 0 0 .5-.5V9.937a2 2 0 0 1 0-3.874V2.5A.5.5 0 0 0 13 2H3a.5.5 0 0 0-.5.5v3.563zM2 7a1 1 0 1 0 0 2 1 1 0 0 0 0-2zm12 0a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"/><path d="M11.434 4H4.566L4.5 5.994h.386c.21-1.252.612-1.446 2.173-1.495l.343-.011v6.343c0 .537-.116.665-1.049.748V12h3.294v-.421c-.938-.083-1.054-.21-1.054-.748V4.488l.348.01c1.56.05 1.963.244 2.173 1.496h.386L11.434 4z"/></svg>
+<!--                                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pc-display-horizontal" viewBox="0 0 16 16"><path d="M1.5 0A1.5 1.5 0 0 0 0 1.5v7A1.5 1.5 0 0 0 1.5 10H6v1H1a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3a1 1 0 0 0-1-1h-5v-1h4.5A1.5 1.5 0 0 0 16 8.5v-7A1.5 1.5 0 0 0 14.5 0h-13Zm0 1h13a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-.5.5h-13a.5.5 0 0 1-.5-.5v-7a.5.5 0 0 1 .5-.5ZM12 12.5a.5.5 0 1 1 1 0 .5.5 0 0 1-1 0Zm2 0a.5.5 0 1 1 1 0 .5.5 0 0 1-1 0ZM1.5 12h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1 0-1ZM1 14.25a.25.25 0 0 1 .25-.25h5.5a.25.25 0 1 1 0 .5h-5.5a.25.25 0 0 1-.25-.25Z"/></svg>-->
+                                      </span>
+                                      <input type="text" class="form-control" placeholder="example：2022年度激励-V50" id="m_name" name="name" autofocus required>
+                                  </div>
+                              </div>
+                              <div class="form-group mb-4">
+                                  <label for="m_start_time">策略起始时间</label>
                                   <div class="input-group">
                                         <span class="input-group-text">
                                             <svg class="icon icon-xs" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"></path></svg>
                                         </span>
-                                        <input data-datepicker="" class="form-control" id="start_time" name="start_time" type="text" required>
+                                        <input data-datepicker="" class="form-control" id="m_start_time" name="start_time" type="text" required>
                                   </div>
                               </div>
                               <!-- End of Form -->
                               <div class="d-grid">
-                                  <button type="button" class="btn btn-gray-800" onclick="add_model()">新 增</button>
+                                  <button type="button" class="btn btn-gray-800" onclick="add_excitation()">新 增</button>
                               </div>
                           </form>
                       </div>
@@ -118,7 +128,7 @@
                               <a href="#" class="text-primary d-inline-flex align-items-center " onclick="">
                                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16"><path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/><path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/></svg>
                               </a>
-                              <a href="#" class="text-primary d-inline-flex align-items-center " onclick="">
+                              <a href="#" class="text-primary d-inline-flex align-items-center " onclick="delete_excitation({{model.id}},'{{model.name}}')">
                                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#FF0000" class="bi bi-trash3" viewBox="0 0 16 16"><path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5ZM11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H2.506a.58.58 0 0 0-.01 0H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1h-.995a.59.59 0 0 0-.01 0H11Zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5h9.916Zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47ZM8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5Z"/></svg>
                               </a>
                           </td>
@@ -141,13 +151,62 @@
         var mod = select.options[select.selectedIndex].value;
         location.replace("?model=" + mod);
     }
+    function add_excitation() {
+        var m_model = document.getElementById('m_model').value;
+        var m_name = document.getElementById('m_name').value;
+        var m_start_time = document.getElementById('m_start_time').value;
+        var data = {};
+        data['model'] = m_model;
+        data['name'] = m_name;
+        data['start_time'] = m_start_time;
+        $.ajax({
+            url: '{{ url_for('admin.excitation') }}',
+            type: 'POST',
+            data: JSON.stringify(data),
+            contentType: 'application/json; charset=UTF-8',
+            processData: false,
+            success: function (result) {
+                if (result['code'] == 200) {
+<!--                    location.href = '{{ url_for('admin.excitation') }}';-->
+                        location.reload();
+                } else {
+                    alert(result['message']);
+                }
+
+            }
+        });
+    }
+    function delete_excitation(id,name) {
+        var conf = confirm('确定删除 '+name+' ?');
+        if (conf ==true){
+            $.ajax({
+                url: '{{ url_for('admin.excitation') }}',
+                type: 'DELETE',
+                data: JSON.stringify({"id":id}),
+                contentType: 'application/json; charset=UTF-8',
+                processData: false,
+                success: function (result) {
+                    if (result['code'] == 200) {
+                        location.reload();
+                    } else {
+                        alert(result['message']);
+                    }
+
+                }
+            });
+        }
+    }
     $('#modal-form').on('show.bs.modal', function (e) {
         // 在模态框内填入数据
-        alert(1);
+        var select = document.getElementById('models');
+        var mod = select.options[select.selectedIndex].text;
+        var m_name = document.getElementById('m_model');
+        m_name.value = mod;
     })
     $('#modal-form').on('hide.bs.modal', function (e) {
         // 清除模态框的数据
-        alert(1);
+        var m_name = document.getElementById('m_model');
+        m_name.value = '';
     })
 </script>
 

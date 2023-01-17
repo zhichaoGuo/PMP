@@ -142,7 +142,7 @@
                 processData: false,
                 success: function (result) {
                     if (result['code'] == 200) {
-                        location.href = '{{ url_for('admin.model') }}';
+                        location.reload();
                     } else {
                         alert(result['message']);
                     }

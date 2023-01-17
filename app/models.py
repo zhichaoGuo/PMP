@@ -116,6 +116,20 @@ class DataBaseUtils:
             return False
 
     @staticmethod
+    def delete_way(id):
+        try:
+            delete = Way.query.filter_by(id=id).first()
+            if delete:
+                db.session.delete(delete)
+                db.session.commit()
+                return 200, 'OK'
+            else:
+                return 404, 'Not found'
+        except Exception as e:
+            return 400, e
+
+
+    @staticmethod
     def get_global_settings():
         settings = Global.query.all()
         setting = {}
@@ -137,6 +151,6 @@ class DataBaseUtils:
 
     @staticmethod
     def datepicker_2_datetime(picker:str):
-        'picker = dd/mm/yyyy'
-        time = picker.split('/')
-        return datetime.date(year=int(time[2]),month=int(time[1]),day=int(time[0]))
+        """picker = yyyy-mm-dd"""
+        time = picker.split('-')
+        return datetime.date(year=int(time[0]),month=int(time[1]),day=int(time[2]))
