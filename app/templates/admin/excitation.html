@@ -155,6 +155,10 @@
         var m_model = document.getElementById('m_model').value;
         var m_name = document.getElementById('m_name').value;
         var m_start_time = document.getElementById('m_start_time').value;
+        if ((m_name == '')||(m_start_time=='')){
+            alert('策略名称或起始时间不能为空！');
+            return 0;
+        }
         var data = {};
         data['model'] = m_model;
         data['name'] = m_name;

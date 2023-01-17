@@ -32,7 +32,17 @@ class ModelView(MethodView):
 
     def post(self):
         data = request.get_json()
-        states_code, message = DataBaseUtils.add_model(data['model'])
+        if not data.get('method') or not data.get('model') :
+            states_code, message = 400, '参数不能为空!'
+        elif data['method'] == 'add':
+            states_code, message = DataBaseUtils.add_model(data['model'])
+        elif data['method'] == 'edit':
+            if not data.get('model_id'):
+                states_code, message = 400, '参数不能为空!'
+            else:
+                states_code, message = DataBaseUtils.edit_model(data['model_id'],data['model'])
+        else:
+            states_code, message = 400, 'method 字段无法识别.'
         return jsonify({
             'code': states_code,
             'message': message,
@@ -62,20 +72,23 @@ class ExcitationView(MethodView):
             exci = DataBaseUtils.get_way(request.args['model'])
             data["select_index"] = int(request.args.get('model'))
         else:
-            exci = DataBaseUtils.get_way('1')
+            exci = DataBaseUtils.get_way('1')  # 默认展示第一个option的策略
         if exci:
             data['exci'] = exci
         return render_template('admin/excitation.html', segment='admin_excitation', data=data)
 
     def post(self):
         data = request.get_json()
-        time = DataBaseUtils.datepicker_2_datetime(data['start_time'])
-        model = Model.query.filter_by(name=data['model']).first()
-        if model:
-            data['model_id'] = model.id
-            states_code, message = DataBaseUtils.add_way(data['model_id'], data['name'], time)
+        if not data.get('start_time') or not data.get('name') or not data.get('model'):
+            states_code, message = 400, '参数不能为空!'
         else:
-            states_code, message = 404, 'Not found.'
+            time = DataBaseUtils.datepicker_2_datetime(data['start_time'])
+            model = Model.query.filter_by(name=data['model']).first()
+            if model:
+                data['model_id'] = model.id
+                states_code, message = DataBaseUtils.add_way(data['model_id'], data['name'], time)
+            else:
+                states_code, message = 404, 'Not found.'
         return jsonify({
             "code": states_code,
             "message": message,

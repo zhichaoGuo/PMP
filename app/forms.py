@@ -18,4 +18,7 @@ class LoginForm(FlaskForm):
                              id='pwd_login',
                              validators=[DataRequired()])
 
+class AddModelForm(FlaskForm):
+    name = StringField('ModelName',
+                       id='')
 

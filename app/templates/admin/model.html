@@ -113,8 +113,13 @@
 <script type="text/javascript">
     function add_model() {
         var model = document.getElementById('model').value;
+        if (model == ''){
+            alert('型号名不能为空');
+            return 0;
+            }
         var data = {};
         data['model'] = model;
+        data['method'] = 'add';
         $.ajax({
             url: '{{ url_for('admin.model') }}',
             type: 'POST',

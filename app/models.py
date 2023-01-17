@@ -74,14 +74,9 @@ class DataBaseUtils:
             return 400, '型号已存在!'
 
     @staticmethod
-    def get_models():
-        all = Model.query.all()
-        return all
-
-    @staticmethod
-    def delete_model(id):  # Todo: 删除型号下所有的激励策略及节点
+    def delete_model(model_id):  # Todo: 删除型号下所有的激励策略及节点
         try:
-            delete = Model.query.filter_by(id=id).first()
+            delete = Model.query.filter_by(id=model_id).first()
             if delete:
                 db.session.delete(delete)
                 db.session.commit()
@@ -92,6 +87,24 @@ class DataBaseUtils:
             return 400, e
 
     @staticmethod
+    def edit_model(model_id, name):
+        try:
+            edit = Model.query.filter_by(id=model_id).first()
+            if edit:
+                edit.name = name
+                db.session.commit()
+                return 200, 'OK'
+            else:
+                return 404, 'Not found.'
+        except Exception as e:
+            return 400, e
+
+    @staticmethod
+    def get_models():
+        all = Model.query.all()
+        return all
+
+    @staticmethod
     def add_way(model_id, way_name, start_time):
         try:
             new = Way(model_id=model_id, name=way_name, start_time=start_time)
@@ -100,6 +113,23 @@ class DataBaseUtils:
             return 200, 'OK'
         except sqlalchemy.exc.IntegrityError:
             return 400, '策略名已存在!'
+
+    @staticmethod
+    def delete_way(way_id):
+        try:
+            delete = Way.query.filter_by(id=way_id).first()
+            if delete:
+                db.session.delete(delete)
+                db.session.commit()
+                return 200, 'OK'
+            else:
+                return 404, 'Not found'
+        except Exception as e:
+            return 400, e
+
+    @staticmethod
+    def edit_way(way_id):
+        pass
 
     @staticmethod
     def get_way(model_id=None):
@@ -114,20 +144,6 @@ class DataBaseUtils:
                 return False
         except Exception as e:
             return False
-
-    @staticmethod
-    def delete_way(id):
-        try:
-            delete = Way.query.filter_by(id=id).first()
-            if delete:
-                db.session.delete(delete)
-                db.session.commit()
-                return 200, 'OK'
-            else:
-                return 404, 'Not found'
-        except Exception as e:
-            return 400, e
-
 
     @staticmethod
     def get_global_settings():
@@ -145,12 +161,12 @@ class DataBaseUtils:
                 new_setting.value = settings[s]
                 db.session.add_all([new_setting])
             else:
-                new_setting = Global(key=s,value=settings[s])
+                new_setting = Global(key=s, value=settings[s])
                 db.session.add(new_setting)
         db.session.commit()
 
     @staticmethod
-    def datepicker_2_datetime(picker:str):
+    def datepicker_2_datetime(picker: str):
         """picker = yyyy-mm-dd"""
         time = picker.split('-')
-        return datetime.date(year=int(time[0]),month=int(time[1]),day=int(time[2]))
+        return datetime.date(year=int(time[0]), month=int(time[1]), day=int(time[2]))
