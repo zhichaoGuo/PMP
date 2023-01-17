@@ -7,9 +7,6 @@ from app.config import config_dict
 from app import create_app, db
 
 # WARNING: Don't run with debug turned on in production!
-# 获此荣誉，感到十分荣幸。感谢公司对我的认可与激励，同时感谢公司给与我充分的发展空间，以及具有挑战性的任务让我可以在短时间内丰富以及提高自身的技能，迅速的成长起来。
-# 感谢同事们的帮助与支持，在我遇到瓶颈时始终有突破和前进的方向。
-# 最后祝愿公司在新的一年更上一层楼，越来越好！也预祝同事们新的一年，好事连连！
 DEBUG = (os.getenv('DEBUG', 'False') == 'True')
 
 # The configuration

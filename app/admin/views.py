@@ -32,7 +32,7 @@ class ModelView(MethodView):
 
     def post(self):
         data = request.get_json()
-        if not data.get('method') or not data.get('model') :
+        if not data.get('method') or not data.get('model'):
             states_code, message = 400, '参数不能为空!'
         elif data['method'] == 'add':
             states_code, message = DataBaseUtils.add_model(data['model'])
@@ -40,7 +40,7 @@ class ModelView(MethodView):
             if not data.get('model_id'):
                 states_code, message = 400, '参数不能为空!'
             else:
-                states_code, message = DataBaseUtils.edit_model(data['model_id'],data['model'])
+                states_code, message = DataBaseUtils.edit_model(data['model_id'], data['model'])
         else:
             states_code, message = 400, 'method 字段无法识别.'
         return jsonify({
@@ -115,3 +115,25 @@ class ExcitationView(MethodView):
             "message": message,
             'data': '',
         })
+
+
+class NodeView(MethodView):
+
+    def get(self):  # ToDo:修改页面展示逻辑
+        data = {"models": DataBaseUtils.get_models(), "select_index": 1}
+        if request.args.get('exci'):
+            mode_index = DataBaseUtils.get_way()
+            node = DataBaseUtils.query_nodes(request.args.get('exci'))
+            data["select_index2"] = int(request.args.get('exci'))
+        else:
+            if request.args.get('model'):
+                exci_index = DataBaseUtils.get_way(request.args['model'])[0].id
+                node = DataBaseUtils.query_nodes(exci_index)
+                data["select_index2"] = int(exci_index)
+                data["select_index"] = int(request.args.get('model'))
+            else:
+                exci_index = DataBaseUtils.get_way(1)[0].id
+                node = DataBaseUtils.query_nodes(exci_index)
+        if node:
+            data["node"] = node
+        return render_template('admin/node.html', segment='admin_node', data=data)

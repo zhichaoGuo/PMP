@@ -63,6 +63,11 @@
                         <span class="sidebar-text">策略管理</span>
                       </a>
                     </li>
+                    <li class="nav-item {% if 'admin_node' in segment %} active {% endif %}">
+                      <a class="nav-link" href="{{url_for('admin.node')}}">
+                        <span class="sidebar-text">节点管理</span>
+                      </a>
+                    </li>
                     <li class="nav-item {% if 'admin_global' in segment %} active {% endif %}">
                       <a class="nav-link" href="{{url_for('admin.global')}}">
                         <span class="sidebar-text">全局参数</span>
