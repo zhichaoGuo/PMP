@@ -79,20 +79,32 @@ class ExcitationView(MethodView):
 
     def post(self):
         data = request.get_json()
-        if not data.get('start_time') or not data.get('name') or not data.get('model'):
-            states_code, message = 400, '参数不能为空!'
-        else:
-            time = DataBaseUtils.datepicker_2_datetime(data['start_time'])
-            model = Model.query.filter_by(name=data['model']).first()
-            if model:
-                data['model_id'] = model.id
-                states_code, message = DataBaseUtils.add_way(data['model_id'], data['name'], time)
+        return_data = ''
+        if not data.get('method'):
+            states_code, message = 404, 'Method not none.'
+        elif data.get('method') == 'add':
+            if not data.get('start_time') or not data.get('name') or not data.get('model'):
+                states_code, message = 400, '参数不能为空!'
+            else:
+                time = DataBaseUtils.datepicker_2_datetime(data['start_time'])
+                model = Model.query.filter_by(name=data['model']).first()
+                if model:
+                    data['model_id'] = model.id
+                    states_code, message = DataBaseUtils.add_way(data['model_id'], data['name'], time)
+                else:
+                    states_code, message = 404, 'Not found.'
+        elif data.get('method') == 'query':
+            return_data = DataBaseUtils.query_nodes(data.get('id'))  # ToDo:添加根据way id 查询node信息的内容
+            if return_data:
+                states_code, message = 200, 'OK'
             else:
                 states_code, message = 404, 'Not found.'
+        else:
+            states_code, message = 400, 'Bad request.'
         return jsonify({
             "code": states_code,
             "message": message,
-            'data': '',
+            'data': return_data,
         })
 
     def delete(self):

@@ -35,6 +35,15 @@ class Node(db.Model):  # 激励节点表
     price = db.Column(db.Float, nullable=False)
     percentage = db.Column(db.String(64))
 
+    def turn_json(self):
+        data = {
+            "id": self.id,
+            "way_id": self.way_id,
+            "price": self.price,
+            "percentage": self.percentage
+        }
+        return data
+
 
 class Record(db.Model):  # 销售记录表
     __tablename__ = 'Record'
@@ -143,6 +152,36 @@ class DataBaseUtils:
             else:
                 return False
         except Exception as e:
+            return False
+
+    @staticmethod
+    def add_node():
+        pass
+
+    @staticmethod
+    def delete_node():
+        pass
+
+    @staticmethod
+    def edit_node(node_id, price, percentage):
+        pass
+
+    @staticmethod
+    def query_nodes(way_id=None):
+        try:
+            if way_id:
+                way = Node.query.filter_by(way_id=way_id).all()
+            else:
+                way = Node.query.all()
+            if way:
+                way_all = []
+                for w in way:
+                    way_all.append(w.turn_json())
+                return way_all
+            else:
+                return False
+        except Exception as e:
+            print(e)
             return False
 
     @staticmethod
