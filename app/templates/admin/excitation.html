@@ -46,10 +46,49 @@
         </div>
     </div>
       <div class="col-log-4 col-sm-3">
-        <button class="btn btn-secondary d-inline-flex align-items-center me-2 dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <button class="btn btn-secondary d-inline-flex align-items-center me-2 dropdown-toggle" data-bs-toggle="modal" data-bs-target="#modal-form"  aria-haspopup="true" aria-expanded="false">
             <svg class="icon icon-xs me-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
             新增激励策略
         </button>
+      </div>
+      <div class="modal fade" id="modal-form" tabindex="-1" role="dialog" aria-labelledby="modal-form" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered" role="document">
+              <div class="modal-content">
+                  <div class="modal-body p-0">
+                      <div class="card p-3 p-lg-4">
+                          <button type="button" class="btn-close ms-auto" data-bs-dismiss="modal" aria-label="Close"></button>
+                          <div class="text-center text-md-center mb-4 mt-md-0">
+                              <h1 class="mb-0 h4">新增激励策略</h1>
+                          </div>
+                          <form action="{{url_for('admin.excitation')}}" class="mt-4" method="post">
+                              <!-- Form -->
+                              <div class="form-group mb-4">
+                                  <label for="name">策略名称</label>
+                                  <div class="input-group">
+                                      <span class="input-group-text" id="basic-addon1">
+                                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pc-display-horizontal" viewBox="0 0 16 16"><path d="M1.5 0A1.5 1.5 0 0 0 0 1.5v7A1.5 1.5 0 0 0 1.5 10H6v1H1a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3a1 1 0 0 0-1-1h-5v-1h4.5A1.5 1.5 0 0 0 16 8.5v-7A1.5 1.5 0 0 0 14.5 0h-13Zm0 1h13a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-.5.5h-13a.5.5 0 0 1-.5-.5v-7a.5.5 0 0 1 .5-.5ZM12 12.5a.5.5 0 1 1 1 0 .5.5 0 0 1-1 0Zm2 0a.5.5 0 1 1 1 0 .5.5 0 0 1-1 0ZM1.5 12h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1 0-1ZM1 14.25a.25.25 0 0 1 .25-.25h5.5a.25.25 0 1 1 0 .5h-5.5a.25.25 0 0 1-.25-.25Z"/></svg>
+                                      </span>
+                                      <input type="text" class="form-control" placeholder="example：2022年度激励-V50" id="name" name="name" autofocus required>
+                                  </div>
+                              </div>
+                              <div class="form-group mb-4">
+                                  <label for="start_time">策略起始时间</label>
+                                  <div class="input-group">
+                                        <span class="input-group-text">
+                                            <svg class="icon icon-xs" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"></path></svg>
+                                        </span>
+                                        <input data-datepicker="" class="form-control" id="start_time" name="start_time" type="text" required>
+                                  </div>
+                              </div>
+                              <!-- End of Form -->
+                              <div class="d-grid">
+                                  <button type="button" class="btn btn-gray-800" onclick="add_model()">新 增</button>
+                              </div>
+                          </form>
+                      </div>
+                  </div>
+              </div>
+          </div>
       </div>
       <div class="col-log-4 col-sm-3"></div>
 
@@ -95,12 +134,21 @@
 
 <!-- Specific Page JS goes HERE  -->
 {% block javascripts %}
+<script src="{{ config.ASSETS_ROOT }}/js/jquery.min.js"></script>
 <script>
     function select_exc() {
         var select = document.getElementById('models');
         var mod = select.options[select.selectedIndex].value;
         location.replace("?model=" + mod);
     }
+    $('#modal-form').on('show.bs.modal', function (e) {
+        // 在模态框内填入数据
+        alert(1);
+    })
+    $('#modal-form').on('hide.bs.modal', function (e) {
+        // 清除模态框的数据
+        alert(1);
+    })
 </script>
 
 {% endblock javascripts %}
