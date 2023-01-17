@@ -141,12 +141,18 @@ class DataBaseUtils:
         pass
 
     @staticmethod
-    def get_way(model_id=None):
+    def get_way(id=None,model_id=None):
         try:
-            if model_id:
-                way = Way.query.filter_by(model_id=model_id).all()
+            if id:
+                if model_id:
+                    way = Way.query.filter_by(id=id,model_id=model_id).all()
+                else:
+                    way = Way.query.filter_by(id=id).all()
             else:
-                way = Way.query.all()
+                if model_id:
+                    way = Way.query.filter_by(model_id=model_id).all()
+                else:
+                    way = Way.query.all()
             if way:
                 return way
             else:
