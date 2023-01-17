@@ -118,6 +118,9 @@ class ExcitationView(MethodView):
 
 
 class NodeView(MethodView):
+    """
+    节点管理页面
+    """
 
     def get(self):
         data = {"models": DataBaseUtils.get_models(), "select_index": 1}
@@ -130,7 +133,8 @@ class NodeView(MethodView):
         else:
             if request.args.get('model'):  # 指定型号
                 if not DataBaseUtils.get_way(model_id=request.args['model']):  # 型号未创建策略
-                    data['exci'] = [{"id":0,"name":"请先创建策略！"}]
+                    data['exci'] = [{"id": 0, "name": "请先创建策略！"}]
+                    data["select_index2"] = 0
                     node = []
                 else:
                     exci_index = DataBaseUtils.get_way(model_id=request.args['model'])[0].id
@@ -145,5 +149,4 @@ class NodeView(MethodView):
                 data["select_index2"] = int(exci_index)
         if node:
             data["node"] = node
-        print(data)
         return render_template('admin/node.html', segment='admin_node', data=data)
