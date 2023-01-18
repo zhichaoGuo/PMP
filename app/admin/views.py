@@ -99,6 +99,12 @@ class ExcitationView(MethodView):
                 states_code, message = 200, 'OK'
             else:
                 states_code, message = 404, 'Not found.'
+        elif data.get('method') == 'edit':
+            if not data.get('start_time') or not data.get('name') or not data.get('id'):
+                states_code, message = 400, '参数不能为空!'
+            else:
+                time = DataBaseUtils.datepicker_2_datetime(data['start_time'])
+                states_code, message = DataBaseUtils.edit_way(data.get('id'), data.get('name'), time)
         else:
             states_code, message = 400, 'Bad request.'
         return jsonify({
@@ -160,9 +166,11 @@ class NodeView(MethodView):
             if not data.get('way_id') or not data.get('price') or not data.get('percentage'):
                 states_code, message = 400, '参数不能为空!'
             else:
-                states_code, message = DataBaseUtils.add_node(data.get('way_id'), data.get('price'), data.get('percentage'))
+                states_code, message = DataBaseUtils.add_node(data.get('way_id'), data.get('price'),
+                                                              data.get('percentage'))
         elif data.get('method') == 'edit':
-            states_code, message = DataBaseUtils.edit_node(data.get('node_id'), data.get('price'), data.get('percentage'))
+            states_code, message = DataBaseUtils.edit_node(data.get('node_id'), data.get('price'),
+                                                           data.get('percentage'))
         else:
             states_code, message = 400, 'Bad request.'
         return jsonify({

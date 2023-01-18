@@ -137,8 +137,13 @@ class DataBaseUtils:
             return 400, e
 
     @staticmethod
-    def edit_way(way_id):
-        pass
+    def edit_way(way_id, name, start_time):
+        try:
+            Way.query.filter_by(id=way_id).first().update({"name": name, "start_time": start_time})
+            db.session.commit()
+            return 200, 'OK'
+        except Exception as e:
+            return 400, str(e)
 
     @staticmethod
     def get_way(id=None, model_id=None):
