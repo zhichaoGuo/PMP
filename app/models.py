@@ -181,8 +181,20 @@ class DataBaseUtils:
             return 400, '策略名已存在!'
 
     @staticmethod
-    def delete_node():
-        pass
+    def delete_node(way_id=None,node_id=None):
+        try:
+            if way_id:
+                dele = Node.query.filter_by(way_id=way_id).delete()
+                db.session.commit()
+                return 200,'OK'
+            if node_id:
+                dele = Node.query.filter_by(id=node_id).delete()
+                db.session.commit()
+                return 200,'OK'
+            return 400, 'Bad request.'
+        except Exception as e:
+            return 400, e
+
 
     @staticmethod
     def edit_node(node_id, price, percentage):

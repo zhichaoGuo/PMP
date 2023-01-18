@@ -168,3 +168,13 @@ class NodeView(MethodView):
             "message": message,
             'data': return_data,
         })
+
+    def delete(self):
+        data = request.get_json()
+        return_data = ''
+        states_code, message = DataBaseUtils.delete_node(node_id=data['id'])
+        return jsonify({
+            "code": states_code,
+            "message": message,
+            'data': return_data,
+        })
