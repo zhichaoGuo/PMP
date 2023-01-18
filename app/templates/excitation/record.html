@@ -21,140 +21,110 @@
       </nav>
       <div class="d-flex justify-content-between w-100 flex-wrap">
           <div class="mb-3 mb-lg-0">
-              <h1 class="h4">新增销售记录</h1>
-          </div>
-      </div>
-  </div>
-  <div class="row mb-4">
-    <div class="col-log-4 col-sm-3">
-        <div class="row">
-            <div class="col-1 align-items-center"></div>
-            <div class="col-3 align-items-center">
-                <h3 >型号></h3>
-            </div>
-            <div class="col-8">
-                <select class="form-select mb-0" id="models" aria-label="Gender select example" onchange="select_exc()">
-
-                </select>
-            </div>
-        </div>
-    </div>
-      <div class="col-log-4 col-sm-3">
-        <button class="btn btn-secondary d-inline-flex align-items-center me-2 dropdown-toggle" data-bs-toggle="modal" data-bs-target="#modal-form"  aria-haspopup="true" aria-expanded="false">
-            <svg class="icon icon-xs me-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
-            新增激励策略
-        </button>
-      </div>
-      <div class="modal fade" id="modal-form" tabindex="-1" role="dialog" aria-labelledby="modal-form" aria-hidden="true">
-          <div class="modal-dialog modal-dialog-centered" role="document">
-              <div class="modal-content">
-                  <div class="modal-body p-0">
-                      <div class="card p-3 p-lg-4">
-                          <button type="button" class="btn-close ms-auto" data-bs-dismiss="modal" aria-label="Close"></button>
-                          <div class="text-center text-md-center mb-4 mt-md-0">
-                              <h1 class="mb-0 h4">新增激励策略</h1>
+              <h1 class="h4">销售记录</h1>
+              <div class="col-lg-4">
+                          <!-- Button Modal -->
+                  <div class="col-log-4 col-sm-3">
+                    <button class="btn btn-secondary d-inline-flex align-items-center me-2 dropdown-toggle" data-bs-toggle="modal" data-bs-target="#modal-form" aria-haspopup="true" aria-expanded="false">
+                        <svg class="icon icon-xs me-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
+                        新增销售记录
+                    </button>
+                  </div>
+                          <!-- Modal Content -->
+                  <div class="modal fade" id="modal-form" tabindex="-1" role="dialog" aria-labelledby="modal-form" aria-hidden="true">
+                      <div class="modal-dialog modal-dialog-centered" role="document">
+                          <div class="modal-content">
+                              <div class="modal-body p-0">
+                                  <div class="card p-3 p-lg-4">
+                                      <button type="button" class="btn-close ms-auto" data-bs-dismiss="modal" aria-label="Close"></button>
+                                      <div class="text-center text-md-center mb-4 mt-md-0">
+                                          <h1 class="mb-0 h4">新增销售记录</h1>
+                                      </div>
+                                      <form action="{{url_for('excitation.record')}}" class="mt-4" method="post">
+                                          <!-- Form -->
+                                          <div class="form-group mb-4">
+                                              <label for="m_name">新增销售记录备注</label>
+                                              <div class="input-group">
+                                                  <span class="input-group-text" id="basic-addon1">
+                                                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pc-display-horizontal" viewBox="0 0 16 16"><path d="M1.5 0A1.5 1.5 0 0 0 0 1.5v7A1.5 1.5 0 0 0 1.5 10H6v1H1a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3a1 1 0 0 0-1-1h-5v-1h4.5A1.5 1.5 0 0 0 16 8.5v-7A1.5 1.5 0 0 0 14.5 0h-13Zm0 1h13a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-.5.5h-13a.5.5 0 0 1-.5-.5v-7a.5.5 0 0 1 .5-.5ZM12 12.5a.5.5 0 1 1 1 0 .5.5 0 0 1-1 0Zm2 0a.5.5 0 1 1 1 0 .5.5 0 0 1-1 0ZM1.5 12h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1 0-1ZM1 14.25a.25.25 0 0 1 .25-.25h5.5a.25.25 0 1 1 0 .5h-5.5a.25.25 0 0 1-.25-.25Z"/></svg>
+<!--                                                              <svg class="icon icon-xs text-gray-600" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"></path><path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"></path></svg>-->
+                                                  </span>
+                                                  <input type="text" class="form-control" placeholder="example：NT" id="m_name" name="m_name" autofocus required>
+                                              </div>
+                                          </div>
+                                          <div class="form-group mb-4">
+                                              <label for="m_time">销售时间</label>
+                                              <div class="input-group">
+                                                    <span class="input-group-text">
+                                                        <svg class="icon icon-xs" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"></path></svg>
+                                                    </span>
+                                                    <input data-datepicker="" class="form-control" id="m_time" name="m_time" type="text" required>
+                                              </div>
+                                          </div>
+                                          <!-- End of Form -->
+                                          <div class="d-grid">
+                                              <button type="button" class="btn btn-gray-800" onclick="add_record()">新 增</button>
+                                          </div>
+                                      </form>
+                                  </div>
+                              </div>
                           </div>
-                          <form action="{{url_for('admin.excitation')}}" class="mt-4" method="post">
-                              <!-- Form -->
-                              <div class="form-group mb-4">
-                                  <label for="m_model">激励型号</label>
-                                  <div class="input-group">
-                                      <span class="input-group-text" id="basic-addon0">
-                                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pc-display-horizontal" viewBox="0 0 16 16"><path d="M1.5 0A1.5 1.5 0 0 0 0 1.5v7A1.5 1.5 0 0 0 1.5 10H6v1H1a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3a1 1 0 0 0-1-1h-5v-1h4.5A1.5 1.5 0 0 0 16 8.5v-7A1.5 1.5 0 0 0 14.5 0h-13Zm0 1h13a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-.5.5h-13a.5.5 0 0 1-.5-.5v-7a.5.5 0 0 1 .5-.5ZM12 12.5a.5.5 0 1 1 1 0 .5.5 0 0 1-1 0Zm2 0a.5.5 0 1 1 1 0 .5.5 0 0 1-1 0ZM1.5 12h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1 0-1ZM1 14.25a.25.25 0 0 1 .25-.25h5.5a.25.25 0 1 1 0 .5h-5.5a.25.25 0 0 1-.25-.25Z"/></svg>
-                                      </span>
-                                      <input class="form-control" id="m_model" type="text" placeholder="" value="" readonly>
-                                  </div>
-                              </div>
-                              <div class="form-group mb-4">
-                                  <label for="m_name">策略名称</label>
-                                  <div class="input-group">
-                                      <span class="input-group-text" id="basic-addon1">
-                                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-textarea-t" viewBox="0 0 16 16"><path d="M1.5 2.5A1.5 1.5 0 0 1 3 1h10a1.5 1.5 0 0 1 1.5 1.5v3.563a2 2 0 0 1 0 3.874V13.5A1.5 1.5 0 0 1 13 15H3a1.5 1.5 0 0 1-1.5-1.5V9.937a2 2 0 0 1 0-3.874V2.5zm1 3.563a2 2 0 0 1 0 3.874V13.5a.5.5 0 0 0 .5.5h10a.5.5 0 0 0 .5-.5V9.937a2 2 0 0 1 0-3.874V2.5A.5.5 0 0 0 13 2H3a.5.5 0 0 0-.5.5v3.563zM2 7a1 1 0 1 0 0 2 1 1 0 0 0 0-2zm12 0a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"/><path d="M11.434 4H4.566L4.5 5.994h.386c.21-1.252.612-1.446 2.173-1.495l.343-.011v6.343c0 .537-.116.665-1.049.748V12h3.294v-.421c-.938-.083-1.054-.21-1.054-.748V4.488l.348.01c1.56.05 1.963.244 2.173 1.496h.386L11.434 4z"/></svg>
-<!--                                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pc-display-horizontal" viewBox="0 0 16 16"><path d="M1.5 0A1.5 1.5 0 0 0 0 1.5v7A1.5 1.5 0 0 0 1.5 10H6v1H1a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3a1 1 0 0 0-1-1h-5v-1h4.5A1.5 1.5 0 0 0 16 8.5v-7A1.5 1.5 0 0 0 14.5 0h-13Zm0 1h13a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-.5.5h-13a.5.5 0 0 1-.5-.5v-7a.5.5 0 0 1 .5-.5ZM12 12.5a.5.5 0 1 1 1 0 .5.5 0 0 1-1 0Zm2 0a.5.5 0 1 1 1 0 .5.5 0 0 1-1 0ZM1.5 12h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1 0-1ZM1 14.25a.25.25 0 0 1 .25-.25h5.5a.25.25 0 1 1 0 .5h-5.5a.25.25 0 0 1-.25-.25Z"/></svg>-->
-                                      </span>
-                                      <input type="text" class="form-control" placeholder="example：2022年度激励-V50" id="m_name" name="name" autofocus required>
-                                  </div>
-                              </div>
-                              <div class="form-group mb-4">
-                                  <label for="m_start_time">策略起始时间</label>
-                                  <div class="input-group">
-                                        <span class="input-group-text">
-                                            <svg class="icon icon-xs" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"></path></svg>
-                                        </span>
-                                        <input data-datepicker="" class="form-control" id="m_start_time" name="start_time" type="text" required>
-                                  </div>
-                              </div>
-                              <!-- End of Form -->
-                              <div class="d-grid">
-                                  <button type="button" class="btn btn-gray-800" onclick="add_excitation()">新 增</button>
-                              </div>
-                          </form>
                       </div>
                   </div>
+                  <div class="modal fade" id="modal-form-edit" tabindex="-1" role="dialog" aria-labelledby="modal-form" aria-hidden="true">
+                      <div class="modal-dialog modal-dialog-centered" role="document">
+                          <div class="modal-content">
+                              <div class="modal-body p-0">
+                                  <div class="card p-3 p-lg-4">
+                                      <button type="button" class="btn-close ms-auto" data-bs-dismiss="modal" aria-label="Close"></button>
+                                      <div class="text-center text-md-center mb-4 mt-md-0">
+                                          <h1 class="mb-0 h4">修改销售记录信息</h1>
+                                      </div>
+                                      <form action="{{url_for('excitation.record')}}" class="mt-4" method="post">
+                                          <!-- Form -->
+                                          <div class="form-group mb-4">
+                                              <label for="e_id">销售记录ID</label>
+                                              <div class="input-group">
+                                                  <span class="input-group-text" id="basic-addon0">
+                                                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pc-display-horizontal" viewBox="0 0 16 16"><path d="M1.5 0A1.5 1.5 0 0 0 0 1.5v7A1.5 1.5 0 0 0 1.5 10H6v1H1a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3a1 1 0 0 0-1-1h-5v-1h4.5A1.5 1.5 0 0 0 16 8.5v-7A1.5 1.5 0 0 0 14.5 0h-13Zm0 1h13a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-.5.5h-13a.5.5 0 0 1-.5-.5v-7a.5.5 0 0 1 .5-.5ZM12 12.5a.5.5 0 1 1 1 0 .5.5 0 0 1-1 0Zm2 0a.5.5 0 1 1 1 0 .5.5 0 0 1-1 0ZM1.5 12h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1 0-1ZM1 14.25a.25.25 0 0 1 .25-.25h5.5a.25.25 0 1 1 0 .5h-5.5a.25.25 0 0 1-.25-.25Z"/></svg>
+                                                  </span>
+                                                  <input class="form-control" id="e_id" type="text" placeholder="" value="" readonly>
+                                              </div>
+                                          </div>
+                                          <div class="form-group mb-4">
+                                              <label for="e_name">销售记录备注</label>
+                                              <div class="input-group">
+                                                  <span class="input-group-text" id="basic-addon3">
+                                                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pc-display-horizontal" viewBox="0 0 16 16"><path d="M1.5 0A1.5 1.5 0 0 0 0 1.5v7A1.5 1.5 0 0 0 1.5 10H6v1H1a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3a1 1 0 0 0-1-1h-5v-1h4.5A1.5 1.5 0 0 0 16 8.5v-7A1.5 1.5 0 0 0 14.5 0h-13Zm0 1h13a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-.5.5h-13a.5.5 0 0 1-.5-.5v-7a.5.5 0 0 1 .5-.5ZM12 12.5a.5.5 0 1 1 1 0 .5.5 0 0 1-1 0Zm2 0a.5.5 0 1 1 1 0 .5.5 0 0 1-1 0ZM1.5 12h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1 0-1ZM1 14.25a.25.25 0 0 1 .25-.25h5.5a.25.25 0 1 1 0 .5h-5.5a.25.25 0 0 1-.25-.25Z"/></svg>
+                                                  </span>
+                                                  <input class="form-control" id="e_name" type="text" placeholder="" value="" readonly>
+                                              </div>
+                                          </div>
+                                          <div class="form-group mb-4">
+                                              <label for="e_time">销售时间</label>
+                                              <div class="input-group">
+                                                    <span class="input-group-text">
+                                                        <svg class="icon icon-xs" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"></path></svg>
+                                                    </span>
+                                                    <input data-datepicker="" class="form-control" id="e_time" name="e_time" type="text" required>
+                                              </div>
+                                          </div>
+                                          <!-- End of Form -->
+                                          <div class="d-grid">
+                                              <button type="button" class="btn btn-gray-800" onclick="edit_record()">修改</button>
+                                          </div>
+                                      </form>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+                          <!-- End of Modal Content -->
               </div>
           </div>
       </div>
-      <div class="modal fade" id="modal-form-edit" tabindex="-1" role="dialog" aria-labelledby="modal-form-edit" aria-hidden="true">
-          <div class="modal-dialog modal-dialog-centered" role="document">
-              <div class="modal-content">
-                  <div class="modal-body p-0">
-                      <div class="card p-3 p-lg-4">
-                          <button type="button" class="btn-close ms-auto" data-bs-dismiss="modal" aria-label="Close"></button>
-                          <div class="text-center text-md-center mb-4 mt-md-0">
-                              <h1 class="mb-0 h4">修改激励策略</h1>
-                          </div>
-                          <form action="{{url_for('admin.excitation')}}" class="mt-4" method="post">
-                              <!-- Form -->
-                              <div class="form-group mb-4">
-                                  <label for="e_model">激励型号</label>
-                                  <div class="input-group">
-                                      <span class="input-group-text" id="basic-addon2">
-                                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pc-display-horizontal" viewBox="0 0 16 16"><path d="M1.5 0A1.5 1.5 0 0 0 0 1.5v7A1.5 1.5 0 0 0 1.5 10H6v1H1a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3a1 1 0 0 0-1-1h-5v-1h4.5A1.5 1.5 0 0 0 16 8.5v-7A1.5 1.5 0 0 0 14.5 0h-13Zm0 1h13a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-.5.5h-13a.5.5 0 0 1-.5-.5v-7a.5.5 0 0 1 .5-.5ZM12 12.5a.5.5 0 1 1 1 0 .5.5 0 0 1-1 0Zm2 0a.5.5 0 1 1 1 0 .5.5 0 0 1-1 0ZM1.5 12h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1 0-1ZM1 14.25a.25.25 0 0 1 .25-.25h5.5a.25.25 0 1 1 0 .5h-5.5a.25.25 0 0 1-.25-.25Z"/></svg>
-                                      </span>
-                                      <input class="form-control" id="e_model" type="text" placeholder="" value="" readonly>
-                                  </div>
-                              </div>
-                              <div class="form-group mb-4">
-                                  <label for="e_way_id">激励策略ID</label>
-                                  <div class="input-group">
-                                      <span class="input-group-text" id="basic-addon3">
-                                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pc-display-horizontal" viewBox="0 0 16 16"><path d="M1.5 0A1.5 1.5 0 0 0 0 1.5v7A1.5 1.5 0 0 0 1.5 10H6v1H1a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3a1 1 0 0 0-1-1h-5v-1h4.5A1.5 1.5 0 0 0 16 8.5v-7A1.5 1.5 0 0 0 14.5 0h-13Zm0 1h13a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-.5.5h-13a.5.5 0 0 1-.5-.5v-7a.5.5 0 0 1 .5-.5ZM12 12.5a.5.5 0 1 1 1 0 .5.5 0 0 1-1 0Zm2 0a.5.5 0 1 1 1 0 .5.5 0 0 1-1 0ZM1.5 12h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1 0-1ZM1 14.25a.25.25 0 0 1 .25-.25h5.5a.25.25 0 1 1 0 .5h-5.5a.25.25 0 0 1-.25-.25Z"/></svg>
-                                      </span>
-                                      <input class="form-control" id="e_way_id" type="text" placeholder="" value="" readonly>
-                                  </div>
-                              </div>
-                              <div class="form-group mb-4">
-                                  <label for="e_name">策略名称</label>
-                                  <div class="input-group">
-                                      <span class="input-group-text" id="basic-addon4">
-                                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-textarea-t" viewBox="0 0 16 16"><path d="M1.5 2.5A1.5 1.5 0 0 1 3 1h10a1.5 1.5 0 0 1 1.5 1.5v3.563a2 2 0 0 1 0 3.874V13.5A1.5 1.5 0 0 1 13 15H3a1.5 1.5 0 0 1-1.5-1.5V9.937a2 2 0 0 1 0-3.874V2.5zm1 3.563a2 2 0 0 1 0 3.874V13.5a.5.5 0 0 0 .5.5h10a.5.5 0 0 0 .5-.5V9.937a2 2 0 0 1 0-3.874V2.5A.5.5 0 0 0 13 2H3a.5.5 0 0 0-.5.5v3.563zM2 7a1 1 0 1 0 0 2 1 1 0 0 0 0-2zm12 0a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"/><path d="M11.434 4H4.566L4.5 5.994h.386c.21-1.252.612-1.446 2.173-1.495l.343-.011v6.343c0 .537-.116.665-1.049.748V12h3.294v-.421c-.938-.083-1.054-.21-1.054-.748V4.488l.348.01c1.56.05 1.963.244 2.173 1.496h.386L11.434 4z"/></svg>
-<!--                                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pc-display-horizontal" viewBox="0 0 16 16"><path d="M1.5 0A1.5 1.5 0 0 0 0 1.5v7A1.5 1.5 0 0 0 1.5 10H6v1H1a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3a1 1 0 0 0-1-1h-5v-1h4.5A1.5 1.5 0 0 0 16 8.5v-7A1.5 1.5 0 0 0 14.5 0h-13Zm0 1h13a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-.5.5h-13a.5.5 0 0 1-.5-.5v-7a.5.5 0 0 1 .5-.5ZM12 12.5a.5.5 0 1 1 1 0 .5.5 0 0 1-1 0Zm2 0a.5.5 0 1 1 1 0 .5.5 0 0 1-1 0ZM1.5 12h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1 0-1ZM1 14.25a.25.25 0 0 1 .25-.25h5.5a.25.25 0 1 1 0 .5h-5.5a.25.25 0 0 1-.25-.25Z"/></svg>-->
-                                      </span>
-                                      <input type="text" class="form-control" placeholder="example：2022年度激励-V50" id="e_name" name="name" autofocus required>
-                                  </div>
-                              </div>
-                              <div class="form-group mb-4">
-                                  <label for="e_start_time">策略起始时间</label>
-                                  <div class="input-group">
-                                        <span class="input-group-text" id="basic-addon5">
-                                            <svg class="icon icon-xs" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"></path></svg>
-                                        </span>
-                                        <input data-datepicker="" class="form-control" id="e_start_time" name="start_time" type="text" required>
-                                  </div>
-                              </div>
-                              <!-- End of Form -->
-                              <div class="d-grid">
-                                  <button type="button" class="btn btn-gray-800" onclick="update_excitation()">保 存</button>
-                              </div>
-                          </form>
-                      </div>
-                  </div>
-              </div>
-          </div>
-      </div>
-      <div class="col-log-4 col-sm-3"></div>
-
   </div>
+
   <div class="card border-0 shadow mb-4">
       <div class="card-body">
           <div class="table-responsive">
@@ -162,53 +132,63 @@
                   <thead class="thead-light">
                       <tr>
                           <th class="border-0 rounded-start">ID</th>
-                          <th class="border-0">名称</th>
-                          <th class="border-0">施行时间</th>
-                          <th class="border-0">可用性</th>
+                          <th class="border-0">销售记录备注</th>
+                          <th class="border-0">销售时间</th>
                           <th class="border-0 rounded-end">操作</th>
                       </tr>
                   </thead>
                   <tbody>
-
+                  {% for record in data %}
+                      <!-- Item -->
+                      <tr>
+                          <td><a href="#" class="text-primary fw-bold">{{record.id}}</a> </td>
+                          <td class="fw-bold d-flex align-items-center">{{record.name}}</td>
+                          <td>{{record.time}}</td>
+                          <td>
+                              <a href="#" class="text-primary d-inline-flex align-items-center " onclick="show_edit_modal({{model.id}},'{{model.name}}')">
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16"><path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/><path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/></svg>
+                              </a>
+                              <a href="#" class="text-primary d-inline-flex align-items-center " onclick="delete_record({{model.id}},'{{model.name}}')">
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#FF0000" class="bi bi-trash3" viewBox="0 0 16 16"><path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5ZM11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H2.506a.58.58 0 0 0-.01 0H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1h-.995a.59.59 0 0 0-.01 0H11Zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5h9.916Zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47ZM8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5Z"/></svg>
+                              </a>
+                          </td>
+                      </tr>
+                      <!-- End of Item -->
+                  {% endfor %}
                   </tbody>
               </table>
           </div>
       </div>
   </div>
+
 {% endblock content %}
 
 <!-- Specific Page JS goes HERE  -->
+
 {% block javascripts %}
 <script src="{{ config.ASSETS_ROOT }}/js/jquery.min.js"></script>
-<script>
-    function select_exc() {
-        var select = document.getElementById('models');
-        var mod = select.options[select.selectedIndex].value;
-        location.replace("?model=" + mod);
-    }
-    function add_excitation() {
-        var m_model = document.getElementById('m_model').value;
+<script type="text/javascript">
+    function add_record() {
         var m_name = document.getElementById('m_name').value;
-        var m_start_time = document.getElementById('m_start_time').value;
-        if ((m_name == '')||(m_start_time=='')){
-            alert('策略名称或起始时间不能为空！');
+        var m_time = document.getElementById('m_time').value;
+
+        if ((m_name == '')||(m_time=='')){
+            alert('新增销售记录备注或销售时间不能为空');
             return 0;
-        }
+            }
         var data = {};
         data['method'] = 'add';
-        data['model'] = m_model;
         data['name'] = m_name;
-        data['start_time'] = m_start_time;
+        data['time'] = 'm_name';
         $.ajax({
-            url: '{{ url_for('admin.excitation') }}',
+            url: '{{ url_for('excitation.record') }}',
             type: 'POST',
             data: JSON.stringify(data),
             contentType: 'application/json; charset=UTF-8',
             processData: false,
             success: function (result) {
                 if (result['code'] == 200) {
-<!--                    location.href = '{{ url_for('admin.excitation') }}';-->
-                        location.reload();
+                    location.href = '{{ url_for('excitation.record') }}';
                 } else {
                     alert(result['message']);
                 }
@@ -216,11 +196,11 @@
             }
         });
     }
-    function delete_excitation(id,name) {
+    function delete_record(id,name) {
         var conf = confirm('确定删除 '+name+' ?');
         if (conf ==true){
             $.ajax({
-                url: '{{ url_for('admin.excitation') }}',
+                url: '{{ url_for('excitation.record') }}',
                 type: 'DELETE',
                 data: JSON.stringify({"id":id}),
                 contentType: 'application/json; charset=UTF-8',
@@ -236,17 +216,17 @@
             });
         }
     }
-    function update_excitation(){
-        var id = document.getElementById('e_way_id').value;
+    function edit_record() {
+        var id = document.getElementById('e_id').value;
         var name = document.getElementById('e_name').value;
-        var start_time = document.getElementById('e_start_time').value;
+        var time = document.getElementById('e_time').value;
         var data={};
         data['method'] = 'edit';
         data['id'] = id;
         data['name'] = name;
-        data['start_time'] = start_time;
+        data['time'] = time;
         $.ajax({
-            url: '{{ url_for('admin.excitation') }}',
+            url: '{{ url_for('excitation.record') }}',
             type: 'POST',
             data: JSON.stringify(data),
             contentType: 'application/json; charset=UTF-8',
@@ -260,40 +240,23 @@
             }
         });
     }
-    function show_edit_modal(id,name,start_time) {
-        var e_way_id = document.getElementById('e_way_id');
+    function show_edit_modal(id,name,time) {
+        var e_id = document.getElementById('e_id');
         var e_name = document.getElementById('e_name');
-        var e_start_time = document.getElementById('e_start_time');
-        e_way_id.value = id;
-        e_name.value = name;
-        e_start_time.value = start_time.split(" ")[0];
+        var e_time = document.getElementById('e_time');
+        e_id.value=id;
+        e_name.value=name;
+        e_time.value=time.split(" ")[0];
 
         $("#modal-form-edit").modal("toggle");
     }
-    $('#modal-form').on('show.bs.modal', function (e) {
-        // 在模态框内填入数据
-        var select = document.getElementById('models');
-        var mod = select.options[select.selectedIndex].text;
-        var m_name = document.getElementById('m_model');
-        m_name.value = mod;
-    })
-    $('#modal-form').on('hide.bs.modal', function (e) {
-        // 清除模态框的数据
-        var m_name = document.getElementById('m_model');
-        m_name.value = '';
-    })
     $('#modal-form-edit').on('show.bs.modal', function (e) {
         // 在模态框内填入数据
-        var select = document.getElementById('models');
-        var mod = select.options[select.selectedIndex].text;
-        var e_name = document.getElementById('e_model');
-        e_name.value = mod;
     })
     $('#modal-form-edit').on('hide.bs.modal', function (e) {
         // 清除模态框的数据
-        var e_name = document.getElementById('e_model');
-        e_name.value = '';
+        var model = document.getElementById('e_model_id');
+        model.value='';
     })
 </script>
-
 {% endblock javascripts %}
