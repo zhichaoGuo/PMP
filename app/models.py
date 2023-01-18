@@ -139,7 +139,7 @@ class DataBaseUtils:
     @staticmethod
     def edit_way(way_id, name, start_time):
         try:
-            Way.query.filter_by(id=way_id).first().update({"name": name, "start_time": start_time})
+            Way.query.filter_by(id=way_id).update({"name": name, "start_time": start_time})
             db.session.commit()
             return 200, 'OK'
         except Exception as e:
