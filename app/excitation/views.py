@@ -1,5 +1,7 @@
-from flask import render_template, request, redirect, url_for, Blueprint
+from flask import render_template, request, redirect, url_for, Blueprint, jsonify
 from flask.views import MethodView
+
+from app.models import DataBaseUtils
 
 excitation = Blueprint('excitation', __name__)
 
@@ -19,7 +21,36 @@ class RecordView(MethodView):
     """
 
     def get(self):
-        return render_template('excitation/record.html', segment='excitation_record')
+        data = DataBaseUtils.query_record(seller='yaki.guo')
+        return render_template('excitation/record.html', segment='excitation_record',data=data)
+
+    def post(self):
+        try:
+            data = request.get_json()
+            if not data.get('method'):
+                states_code, message = 404, 'Method not none.'
+            elif data.get('method') == 'add':
+                # ToDo:添加销售记录
+                if not data.get('name') or not data.get('time'):
+                    states_code, message = 400, '参数不能为空!'
+                else:
+                    time = DataBaseUtils.datepicker_2_datetime(data['time'])
+                    states_code, message = DataBaseUtils.add_record(name=data['name'],time=time,seller='yaki.guo')
+            elif data.get('method') == 'edit':
+                # ToDo:修改销售记录
+                if not data.get('way_id') or not data.get('price') or not data.get('percentage'):
+                    states_code, message = 400, '参数不能为空!'
+                else:
+                    states_code, message = DataBaseUtils.edit_record()
+            else:
+                states_code, message = 400, 'Bad request.'
+        except Exception as e:
+            states_code, message = 400, str(e)
+        return jsonify({
+            "code": states_code,
+            "message": message,
+            "data": '',
+        })
 
 
 class DetailView(MethodView):
@@ -29,5 +60,32 @@ class DetailView(MethodView):
 
     def get(self):
         return render_template('excitation/detail.html', segment='excitation_detail')
+
+    def post(self):
+        try:
+            data = request.get_json()
+            if not data.get('method'):
+                states_code, message = 404, 'Method not none.'
+            elif data.get('method') == 'add':
+                # ToDo:添加销售明细
+                if not data.get('way_id') or not data.get('price') or not data.get('percentage'):
+                    states_code, message = 400, '参数不能为空!'
+                else:
+                    states_code, message = 200, 'OK'
+            elif data.get('method') == 'edit':
+                # ToDo:修改销售明细
+                if not data.get('way_id') or not data.get('price') or not data.get('percentage'):
+                    states_code, message = 400, '参数不能为空!'
+                else:
+                    states_code, message = 200, 'OK'
+            else:
+                states_code, message = 400, 'Bad request.'
+        except Exception as e:
+            states_code, message = 400, str(e)
+        return jsonify({
+            "code": states_code,
+            "message": message,
+            "data": '',
+        })
 
 

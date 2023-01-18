@@ -50,6 +50,7 @@ class Record(db.Model):  # 销售记录表
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(64), nullable=False)
+    seller = db.Column(db.String(64), nullable=False)
     sale_time = db.Column(db.DateTime(), default=datetime.datetime.now())
 
 
@@ -110,7 +111,7 @@ class DataBaseUtils:
             return 400, e
 
     @staticmethod
-    def get_models():
+    def query_models():
         all = Model.query.all()
         return all
 
@@ -125,7 +126,7 @@ class DataBaseUtils:
             return 400, '策略名已存在!'
 
     @staticmethod
-    def delete_way(model_id=None,way_id=None):
+    def delete_way(model_id=None, way_id=None):
         try:
             if model_id:
                 delete_way = Way.query.filter_by(model_id=model_id).all()
@@ -154,7 +155,7 @@ class DataBaseUtils:
             return 400, str(e)
 
     @staticmethod
-    def get_way(id=None, model_id=None):
+    def query_way(id=None, model_id=None):
         try:
             if id:
                 if model_id:
@@ -267,6 +268,49 @@ class DataBaseUtils:
                 new_setting = Global(key=s, value=settings[s])
                 db.session.add(new_setting)
         db.session.commit()
+
+    @staticmethod
+    def add_record(name, time, seller):
+        try:
+            new = Record(name=name, sale_time=time, seller=seller)
+            db.session.add(new)
+            db.session.commit()
+            return 200, 'OK'
+        except Exception as e:
+            return 400, str(e)
+
+    @staticmethod
+    def delete_record():  # ToDo
+        pass
+
+    @staticmethod
+    def edit_record():  # ToDo
+        pass
+
+    @staticmethod
+    def query_record(seller):  # ToDo
+        try:
+            data = Record.query.filter_by(seller=seller).all()
+            return data
+        except Exception as e:
+            print(e)
+            return False
+
+    @staticmethod
+    def add_detail():  # ToDo
+        pass
+
+    @staticmethod
+    def delete_detail():  # ToDo
+        pass
+
+    @staticmethod
+    def edit_detail():  # ToDo
+        pass
+
+    @staticmethod
+    def query_detail():  # ToDo
+        pass
 
     @staticmethod
     def datepicker_2_datetime(picker: str):

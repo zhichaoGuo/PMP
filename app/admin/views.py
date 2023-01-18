@@ -27,7 +27,7 @@ class ModelView(MethodView):
     """
 
     def get(self):
-        data = DataBaseUtils.get_models()
+        data = DataBaseUtils.query_models()
         return render_template('admin/model.html', segment='admin_model', data=data)
 
     def post(self):
@@ -66,13 +66,13 @@ class ExcitationView(MethodView):
 
     def get(self):
 
-        data = {"models": DataBaseUtils.get_models(), "select_index": 1}
+        data = {"models": DataBaseUtils.query_models(), "select_index": 1}
 
         if request.args.get('model'):
-            exci = DataBaseUtils.get_way(model_id=request.args['model'])
+            exci = DataBaseUtils.query_way(model_id=request.args['model'])
             data["select_index"] = int(request.args.get('model'))
         else:
-            exci = DataBaseUtils.get_way(model_id=1)  # 默认展示第一个option的策略
+            exci = DataBaseUtils.query_way(model_id=1)  # 默认展示第一个option的策略
         if exci:
             data['exci'] = exci
         return render_template('admin/excitation.html', segment='admin_excitation', data=data)
@@ -129,29 +129,29 @@ class NodeView(MethodView):
     """
 
     def get(self):
-        data = {"models": DataBaseUtils.get_models(), "select_index": 1}
+        data = {"models": DataBaseUtils.query_models(), "select_index": 1}
         if request.args.get('exci'):  # 指定策略
-            model_index = DataBaseUtils.get_way(id=request.args.get('exci'))[0].model_id
+            model_index = DataBaseUtils.query_way(id=request.args.get('exci'))[0].model_id
             node = DataBaseUtils.query_nodes(request.args.get('exci'))
-            data['exci'] = DataBaseUtils.get_way(model_id=model_index)
+            data['exci'] = DataBaseUtils.query_way(model_id=model_index)
             data["select_index"] = model_index
             data["select_index2"] = int(request.args.get('exci'))
         else:
             if request.args.get('model'):  # 指定型号
-                if not DataBaseUtils.get_way(model_id=request.args['model']):  # 型号未创建策略
+                if not DataBaseUtils.query_way(model_id=request.args['model']):  # 型号未创建策略
                     data['exci'] = [{"id": 0, "name": "请先创建策略！"}]
                     data["select_index2"] = 0
                     node = []
                 else:
-                    exci_index = DataBaseUtils.get_way(model_id=request.args['model'])[0].id
+                    exci_index = DataBaseUtils.query_way(model_id=request.args['model'])[0].id
                     node = DataBaseUtils.query_nodes(exci_index)
-                    data['exci'] = DataBaseUtils.get_way(model_id=request.args['model'])
+                    data['exci'] = DataBaseUtils.query_way(model_id=request.args['model'])
                     data["select_index2"] = int(exci_index)
                 data["select_index"] = int(request.args.get('model'))
             else:  # 未指定型号
-                exci_index = DataBaseUtils.get_way(model_id=1)[0].id
+                exci_index = DataBaseUtils.query_way(model_id=1)[0].id
                 node = DataBaseUtils.query_nodes(exci_index)
-                data['exci'] = DataBaseUtils.get_way(model_id=1)
+                data['exci'] = DataBaseUtils.query_way(model_id=1)
                 data["select_index2"] = int(exci_index)
         if node:
             data["node"] = node
