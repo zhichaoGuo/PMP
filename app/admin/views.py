@@ -153,7 +153,7 @@ class NodeView(MethodView):
 
     def post(self):
         data = request.get_json()
-        return_data = ''
+        return_data = ""
         if not data.get('method'):
             states_code, message = 404, 'Method not none.'
         elif data.get('method') == 'add':
@@ -161,12 +161,14 @@ class NodeView(MethodView):
                 states_code, message = 400, '参数不能为空!'
             else:
                 states_code, message = DataBaseUtils.add_node(data.get('way_id'), data.get('price'), data.get('percentage'))
+        elif data.get('method') == 'edit':
+            states_code, message = DataBaseUtils.edit_node(data.get('node_id'), data.get('price'), data.get('percentage'))
         else:
             states_code, message = 400, 'Bad request.'
         return jsonify({
             "code": states_code,
             "message": message,
-            'data': return_data,
+            "data": return_data,
         })
 
     def delete(self):

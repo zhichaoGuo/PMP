@@ -181,24 +181,41 @@ class DataBaseUtils:
             return 400, '策略名已存在!'
 
     @staticmethod
-    def delete_node(way_id=None,node_id=None):
+    def delete_node(way_id=None, node_id=None):
         try:
             if way_id:
                 dele = Node.query.filter_by(way_id=way_id).delete()
                 db.session.commit()
-                return 200,'OK'
+                return 200, 'OK'
             if node_id:
                 dele = Node.query.filter_by(id=node_id).delete()
                 db.session.commit()
-                return 200,'OK'
+                return 200, 'OK'
             return 400, 'Bad request.'
         except Exception as e:
-            return 400, e
-
+            return 400, str(e)
 
     @staticmethod
     def edit_node(node_id, price, percentage):
-        pass
+        try:
+            way_id = Node.query.filter_by(id=node_id).first().way_id
+            old = Node.query.filter_by(way_id=way_id, price=price).first()
+            if old:  # 存在想要修改到的价格的节点
+                if old.id != int(node_id):
+                    return 400, '存在价格为 %s 的节点，ID为%s' % (price, old.id)
+            down = Node.query.filter_by(way_id=way_id).filter(Node.id != node_id).filter(
+                Node.price.__lt__(price)).order_by(-Node.price).first()
+            _down = down.percentage if down else 0
+            up = Node.query.filter_by(way_id=way_id).filter(Node.id != node_id).filter(
+                Node.price.__gt__(price)).order_by(Node.price).first()
+            _up = up.percentage if up else float(100)
+            if float(percentage) <= _down or float(percentage) >= _up:
+                return 400, '底价 %s 的激励百分比应该在[%s-%s]区间内！' % (price, _down, _up)
+            Node.query.filter_by(id=node_id).update({"price": price, "percentage": percentage})
+            db.session.commit()
+            return 200, 'OK'
+        except Exception as e:
+            return 400, str(e)
 
     @staticmethod
     def query_nodes(way_id=None):
