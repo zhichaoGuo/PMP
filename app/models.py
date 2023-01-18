@@ -176,9 +176,9 @@ class DataBaseUtils:
     def query_nodes(way_id=None):
         try:
             if way_id:
-                way = Node.query.filter_by(way_id=way_id).all()
+                way = Node.query.filter_by(way_id=way_id).order_by(Node.price)
             else:
-                way = Node.query.all()
+                way = Node.query.all().order_by(Node.price)
             if way:
                 way_all = []
                 for w in way:

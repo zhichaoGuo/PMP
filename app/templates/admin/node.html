@@ -65,7 +65,7 @@
         </div>
     </div>
       <div class="col-log-4 col-sm-3">
-        <button class="btn btn-secondary d-inline-flex align-items-center me-2 dropdown-toggle" data-bs-toggle="modal" data-bs-target="#modal-form"  aria-haspopup="true" aria-expanded="false">
+        <button class="btn btn-secondary d-inline-flex align-items-center me-2 dropdown-toggle" onclick="show_add_modal()" aria-haspopup="true" aria-expanded="false">
             <svg class="icon icon-xs me-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
             新增激励节点
         </button>
@@ -236,22 +236,25 @@
             });
         }
     }
-    $('#modal-form').on('show.bs.modal', function (e) {
+    function show_add_modal() {
         var excitation_index = document.getElementById('excitations').value;
         if (excitation_index == 0){
             alert('请先创建策略！');
-            $('#modal-form').modal('hide');
         }else{
-            // 在模态框内填入数据
-            var select = document.getElementById('models');
-            var select2 = document.getElementById('excitations');
-            var mod = select.options[select.selectedIndex].text;
-            var excitation = select2.options[select2.selectedIndex].text;
-            var m_name = document.getElementById('m_model');
-            var m_excitation = document.getElementById('m_excitation');
-            m_name.value = mod;
-            m_excitation.value = excitation;
+            $("#modal-form").modal("toggle");
         }
+    }
+    $('#modal-form').on('show.bs.modal', function (e) {
+        // 在模态框内填入数据
+        var select = document.getElementById('models');
+        var select2 = document.getElementById('excitations');
+        var mod = select.options[select.selectedIndex].text;
+        var excitation = select2.options[select2.selectedIndex].text;
+        var m_name = document.getElementById('m_model');
+        var m_excitation = document.getElementById('m_excitation');
+        m_name.value = mod;
+        m_excitation.value = excitation;
+
     })
     $('#modal-form').on('hide.bs.modal', function (e) {
         // 清除模态框的数据
