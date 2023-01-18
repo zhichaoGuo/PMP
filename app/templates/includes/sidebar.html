@@ -28,13 +28,40 @@
                   <span class="sidebar-text">主 页</span>
                 </a>
               </li>
-              <li class="nav-item {% if 'excitation_tables' in segment %} active {% endif %}">
-                <a href="{{url_for('excitation.tables')}}" class="nav-link">
-                  <span class="sidebar-icon">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bar-chart-line-fill" viewBox="0 0 16 16"><path d="M11 2a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v12h.5a.5.5 0 0 1 0 1H.5a.5.5 0 0 1 0-1H1v-3a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3h1V7a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v7h1V2z"></path></svg>
+              <li class="nav-item {% if 'excitation_' in segment %} active {% endif %}">
+                <span
+                  class="nav-link  collapsed  d-flex justify-content-between align-items-center"
+                  data-bs-toggle="collapse" data-bs-target="#submenu-home">
+                  <span>
+                    <span class="sidebar-icon">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bar-chart-line-fill" viewBox="0 0 16 16"><path d="M11 2a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v12h.5a.5.5 0 0 1 0 1H.5a.5.5 0 0 1 0-1H1v-3a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3h1V7a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v7h1V2z"></path></svg>
+                    </span>
+                    <span class="sidebar-text">销售记录</span>
                   </span>
-                  <span class="sidebar-text">销售记录</span>
-                </a>
+                  <span class="link-arrow">
+                    <svg class="icon icon-sm" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path></svg>
+                  </span>
+                </span>
+                <div class="multi-level collapse {% if 'excitation_' in segment %} show {% endif %}"
+                  role="list" id="submenu-home" aria-expanded="false">
+                  <ul class="flex-column nav">
+                    <li class="nav-item {% if 'excitation_all' in segment %} active {% endif %}">
+                      <a class="nav-link" href="{{url_for('excitation.all_record')}}">
+                        <span class="sidebar-text">销售激励总览</span>
+                      </a>
+                    </li>
+                    <li class="nav-item {% if 'excitation_record' in segment %} active {% endif %}">
+                      <a class="nav-link" href="{{url_for('excitation.record')}}">
+                        <span class="sidebar-text">管理销售记录</span>
+                      </a>
+                    </li>
+                    <li class="nav-item {% if 'excitation_detail' in segment %} active {% endif %}">
+                      <a class="nav-link" href="{{url_for('excitation.detail')}}">
+                        <span class="sidebar-text">管理销售明细</span>
+                      </a>
+                    </li>
+                  </ul>
+                </div>
               </li>
               <li class="nav-item {% if 'admin_' in segment %} active {% endif %}">
                 <span

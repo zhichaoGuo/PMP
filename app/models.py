@@ -87,6 +87,7 @@ class DataBaseUtils:
         try:
             delete = Model.query.filter_by(id=model_id).first()
             if delete:
+                DataBaseUtils.delete_way(model_id=model_id)
                 db.session.delete(delete)
                 db.session.commit()
                 return 200, 'OK'
@@ -124,15 +125,22 @@ class DataBaseUtils:
             return 400, '策略名已存在!'
 
     @staticmethod
-    def delete_way(way_id):
+    def delete_way(model_id=None,way_id=None):
         try:
-            delete = Way.query.filter_by(id=way_id).first()
-            if delete:
-                db.session.delete(delete)
-                db.session.commit()
-                return 200, 'OK'
-            else:
-                return 404, 'Not found'
+            if model_id:
+                delete_way = Way.query.filter_by(model_id=model_id).all()
+                for d in delete_way:
+                    DataBaseUtils.delete_way(way_id=d.id)
+            if way_id:
+                delete = Way.query.filter_by(id=way_id).first()
+                if delete:
+                    DataBaseUtils.delete_node(way_id=way_id)
+                    db.session.delete(delete)
+                    db.session.commit()
+                    return 200, 'OK'
+                else:
+                    return 404, 'Not found'
+            return 400, 'Bad request.'
         except Exception as e:
             return 400, e
 

@@ -10,6 +10,7 @@ class LoginView(MethodView):
     """
     登录页面
     """
+
     def get(self):
         login_form = LoginForm(request.form)
 
@@ -24,6 +25,7 @@ class LogoutView(MethodView):
     """
     登出页面
     """
+
     def get(self):
         return redirect(url_for('home.login'))
 
@@ -32,6 +34,7 @@ class RootView(MethodView):
     """
     根页面跳转至看板页面
     """
+
     def get(self):
         return redirect(url_for('home.home'))
 
@@ -40,6 +43,7 @@ class HomeView(MethodView):
     """
     看板页面
     """
+
     def get(self):
         return render_template('home/dashboard.html')
 

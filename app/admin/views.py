@@ -115,7 +115,7 @@ class ExcitationView(MethodView):
 
     def delete(self):
         data = request.get_json()
-        states_code, message = DataBaseUtils.delete_way(data['id'])
+        states_code, message = DataBaseUtils.delete_way(way_id=data['id'])
         return jsonify({
             "code": states_code,
             "message": message,

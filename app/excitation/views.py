@@ -6,9 +6,28 @@ excitation = Blueprint('excitation', __name__)
 
 class ExcitationView(MethodView):
     """
-    激励页面
+    销售记录页面
     """
+
     def get(self):
-        return render_template('excitation/tables.html',segment='excitation_tables')
+        return render_template('excitation/all_record.html', segment='excitation_all')
+
+
+class RecordView(MethodView):
+    """
+    管理销售记录页面
+    """
+
+    def get(self):
+        return render_template('excitation/record.html', segment='excitation_record')
+
+
+class DetailView(MethodView):
+    """
+    管理销售明细页面
+    """
+
+    def get(self):
+        return render_template('excitation/detail.html', segment='excitation_detail')
 
 
