@@ -121,7 +121,7 @@
                               </div>
                               <!-- End of Form -->
                               <div class="d-grid">
-                                  <button type="button" class="btn btn-gray-800" onclick="add_excitation()">新 增</button>
+                                  <button type="button" class="btn btn-gray-800" onclick="add_node()">新 增</button>
                               </div>
                           </form>
                       </div>
@@ -187,27 +187,28 @@
         var nod = select2.options[select2.selectedIndex].value;
         location.replace("?model=" + mod +"&exci=" + nod);
     }
-    function add_excitation() {
+    function add_node() {
 
-        var m_model = document.getElementById('m_model').value;
-        var m_name = document.getElementById('m_excitation').value;
-        if ((m_name == '')||(m_start_time=='')){
-            alert('策略名称或起始时间不能为空！');
-            return 0;
+        var m_price = document.getElementById('m_price').value;
+        var m_percentage = document.getElementById('m_percentage').value;
+        if ((m_price == '')||(m_percentage=='')){
+            alert('激励区间底价或激励百分比(%)不能为空！');
+            return ;
         }
+        var m_way_id = document.getElementById('m_excitation').name;
         var data = {};
-        data['model'] = m_model;
-        data['name'] = m_name;
-        data['start_time'] = m_start_time;
+        data['method'] = 'add';
+        data['way_id'] = m_way_id;
+        data['price'] = m_price;
+        data['percentage'] = m_percentage;
         $.ajax({
-            url: '{{ url_for('admin.excitation') }}',
+            url: '{{ url_for('admin.node') }}',
             type: 'POST',
             data: JSON.stringify(data),
             contentType: 'application/json; charset=UTF-8',
             processData: false,
             success: function (result) {
                 if (result['code'] == 200) {
-<!--                    location.href = '{{ url_for('admin.excitation') }}';-->
                         location.reload();
                 } else {
                     alert(result['message']);
@@ -253,7 +254,9 @@
         var m_name = document.getElementById('m_model');
         var m_excitation = document.getElementById('m_excitation');
         m_name.value = mod;
+        m_name.name = select.value;
         m_excitation.value = excitation;
+        m_excitation.name = select2.value;
 
     })
     $('#modal-form').on('hide.bs.modal', function (e) {

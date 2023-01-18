@@ -33,7 +33,7 @@ class Node(db.Model):  # 激励节点表
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     way_id = db.Column(db.Integer, nullable=False)
     price = db.Column(db.Float, nullable=False)
-    percentage = db.Column(db.String(64))
+    percentage = db.Column(db.Float, nullable=False)
 
     def turn_json(self):
         data = {
@@ -141,11 +141,11 @@ class DataBaseUtils:
         pass
 
     @staticmethod
-    def get_way(id=None,model_id=None):
+    def get_way(id=None, model_id=None):
         try:
             if id:
                 if model_id:
-                    way = Way.query.filter_by(id=id,model_id=model_id).all()
+                    way = Way.query.filter_by(id=id, model_id=model_id).all()
                 else:
                     way = Way.query.filter_by(id=id).all()
             else:
@@ -161,8 +161,24 @@ class DataBaseUtils:
             return False
 
     @staticmethod
-    def add_node():
-        pass
+    def add_node(way_id, price, percentage):
+        try:
+            old = Node.query.filter_by(way_id=way_id, price=price).first()
+            if old:
+                return 400, '策略中已包含相同底价的节点！'
+            down = Node.query.filter_by(way_id=way_id).filter(Node.price.__lt__(price)).order_by(-Node.price).first()
+            _down = down.percentage if down else 0
+            up = Node.query.filter_by(way_id=way_id).filter(Node.price.__gt__(price)).order_by(Node.price).first()
+            _up = up.percentage if up else float(100)
+            if float(percentage) <= _down or float(percentage) >= _up:
+                return 400, '底价 %s 的激励百分比应该在[%s-%s]区间内！' % (price, _down, _up)
+            new = Node(way_id=way_id, price=price, percentage=percentage)
+            db.session.add(new)
+            db.session.commit()
+            return 200, 'OK'
+
+        except sqlalchemy.exc.IntegrityError:
+            return 400, '策略名已存在!'
 
     @staticmethod
     def delete_node():
