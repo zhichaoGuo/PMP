@@ -280,15 +280,25 @@ class DataBaseUtils:
             return 400, str(e)
 
     @staticmethod
-    def delete_record():  # ToDo
-        pass
+    def delete_record(id):  # ToDo:删除名下的明细
+        try:
+            dele = Record.query.filter_by(id=id).delete()
+            db.session.commit()
+            return 200, 'OK'
+        except Exception as e:
+            return 400, str(e)
 
     @staticmethod
-    def edit_record():  # ToDo
-        pass
+    def edit_record(id, name, time):
+        try:
+            edit = Record.query.filter_by(id=id).update({"name": name, "sale_time": time})
+            db.session.commit()
+            return 200, 'OK'
+        except Exception as e:
+            return 400, str(e)
 
     @staticmethod
-    def query_record(seller):  # ToDo
+    def query_record(seller):
         try:
             data = Record.query.filter_by(seller=seller).all()
             return data

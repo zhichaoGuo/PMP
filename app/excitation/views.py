@@ -38,14 +38,27 @@ class RecordView(MethodView):
                     states_code, message = DataBaseUtils.add_record(name=data['name'],time=time,seller='yaki.guo')
             elif data.get('method') == 'edit':
                 # ToDo:修改销售记录
-                if not data.get('way_id') or not data.get('price') or not data.get('percentage'):
+                if not data.get('id') or not data.get('name') or not data.get('time'):
                     states_code, message = 400, '参数不能为空!'
                 else:
-                    states_code, message = DataBaseUtils.edit_record()
+                    time = DataBaseUtils.datepicker_2_datetime(data['time'])
+                    states_code, message = DataBaseUtils.edit_record(data['id'],data['name'],time)
             else:
                 states_code, message = 400, 'Bad request.'
         except Exception as e:
             states_code, message = 400, str(e)
+        return jsonify({
+            "code": states_code,
+            "message": message,
+            "data": '',
+        })
+
+    def delete(self):
+        data = request.get_json()
+        if data.get('id'):
+            states_code, message = DataBaseUtils.delete_record(data['id'])
+        else:
+            states_code, message = 404,'Not found.'
         return jsonify({
             "code": states_code,
             "message": message,
