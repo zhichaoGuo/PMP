@@ -73,7 +73,8 @@ class DetailView(MethodView):
 
     def get(self):
         record = DataBaseUtils.query_record(seller='yaki.guo')
-        data = {"record": record, "select_index": record[0].id}
+        models = DataBaseUtils.query_models()
+        data = {"record": record, "select_index": record[0].id, "models": models, "select_index2": models[0].id}
         if request.args.get('record_id'):
             details = DataBaseUtils.query_detail(record_id=request.args['record_id'])
             data["select_index"] = int(request.args.get('record_id'))
@@ -90,14 +91,11 @@ class DetailView(MethodView):
             if not data.get('method'):
                 states_code, message = 404, 'Method not none.'
             elif data.get('method') == 'add':
-                if not data.get('record_id') or not data.get('model_id') or not data.get('price') or not data.get(
-                        'time') or not data.get('number'):
+                if not data.get('record_id') or not data.get('model_id') or not data.get('price') or not data.get('number'):
                     states_code, message = 400, '参数不能为空!'
                 else:
-                    time = DataBaseUtils.datepicker_2_datetime(data['time'])
                     states_code, message = DataBaseUtils.add_detail(record_id=data['record_id'],
-                                                                    model_id=data['model_id'], price=data['price'],
-                                                                    time=time, number=data['number'])
+                                                                    model_id=data['model_id'], price=data['price'],number=data['number'])
             elif data.get('method') == 'edit':
                 # ToDo:修改销售明细
                 if not data.get('way_id') or not data.get('price') or not data.get('percentage'):

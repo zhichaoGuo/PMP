@@ -23,7 +23,7 @@ class Way(db.Model):  # 激励策略表
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     model_id = db.Column(db.Integer, nullable=False)
     name = db.Column(db.String(64), unique=True)
-    start_time = db.Column(db.DateTime(), default=datetime.datetime.now())
+    start_time = db.Column(db.Date, default=datetime.date.today())
     status = db.Column(db.Boolean(), default=False)
 
 
@@ -51,7 +51,7 @@ class Record(db.Model):  # 销售记录表
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(64), nullable=False)
     seller = db.Column(db.String(64), nullable=False)
-    sale_time = db.Column(db.DateTime(), default=datetime.datetime.now())
+    sale_time = db.Column(db.Date, default=datetime.date.today())
 
 
 class Detail(db.Model):  # 销售明细表
@@ -61,7 +61,6 @@ class Detail(db.Model):  # 销售明细表
     record_id = db.Column(db.Integer, nullable=False)
     model_id = db.Column(db.Integer, nullable=False)
     sale_price = db.Column(db.Float, nullable=False)
-    sale_time = db.Column(db.Date, default=datetime.date.today())
     sale_number = db.Column(db.Integer, nullable=False)
 
 
@@ -307,9 +306,9 @@ class DataBaseUtils:
             return False
 
     @staticmethod
-    def add_detail(record_id, model_id, price, time, number):  # ToDo:同一record_id中的model_id不应该相同
+    def add_detail(record_id, model_id, price, number):  # ToDo:同一record_id中的model_id不应该相同
         try:
-            new = Detail(record_id=record_id, model_id=model_id, sale_price=price, sale_time=time, sale_number=number)
+            new = Detail(record_id=record_id, model_id=model_id, sale_price=price, sale_number=number)
             db.session.add(new)
             db.session.commit()
             return 200, 'OK'
