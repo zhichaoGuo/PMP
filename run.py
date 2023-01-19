@@ -33,4 +33,4 @@ if DEBUG:
 
 if __name__ == "__main__":
     # https://icons.bootcss.com/
-    app.run()
+    app.run(port=5001)
