@@ -32,4 +32,5 @@ if DEBUG:
     app.logger.info('ASSETS_ROOT      = ' + app_config.ASSETS_ROOT)
 
 if __name__ == "__main__":
+    # https://icons.bootcss.com/
     app.run()

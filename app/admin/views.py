@@ -65,14 +65,14 @@ class ExcitationView(MethodView):
     """
 
     def get(self):
-
-        data = {"models": DataBaseUtils.query_models(), "select_index": 1}
+        models = DataBaseUtils.query_models()
+        data = {"models": models, "select_index": models[0].id}
 
         if request.args.get('model'):
             exci = DataBaseUtils.query_way(model_id=request.args['model'])
             data["select_index"] = int(request.args.get('model'))
         else:
-            exci = DataBaseUtils.query_way(model_id=1)  # 默认展示第一个option的策略
+            exci = DataBaseUtils.query_way(model_id=models[0].id)  # 默认展示第一个option的策略
         if exci:
             data['exci'] = exci
         return render_template('admin/excitation.html', segment='admin_excitation', data=data)

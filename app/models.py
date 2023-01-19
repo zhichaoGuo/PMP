@@ -307,8 +307,14 @@ class DataBaseUtils:
             return False
 
     @staticmethod
-    def add_detail():  # ToDo
-        pass
+    def add_detail(record_id, model_id, price, time, number):  # ToDo:同一record_id中的model_id不应该相同
+        try:
+            new = Detail(record_id=record_id, model_id=model_id, sale_price=price, sale_time=time, sale_number=number)
+            db.session.add(new)
+            db.session.commit()
+            return 200, 'OK'
+        except Exception as e:
+            return 400, str(e)
 
     @staticmethod
     def delete_detail():  # ToDo
@@ -319,7 +325,7 @@ class DataBaseUtils:
         pass
 
     @staticmethod
-    def query_detail():  # ToDo
+    def query_detail(record_id):  # ToDo
         pass
 
     @staticmethod

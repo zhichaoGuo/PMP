@@ -22,7 +22,7 @@ class RecordView(MethodView):
 
     def get(self):
         data = DataBaseUtils.query_record(seller='yaki.guo')
-        return render_template('excitation/record.html', segment='excitation_record',data=data)
+        return render_template('excitation/record.html', segment='excitation_record', data=data)
 
     def post(self):
         try:
@@ -35,14 +35,14 @@ class RecordView(MethodView):
                     states_code, message = 400, '参数不能为空!'
                 else:
                     time = DataBaseUtils.datepicker_2_datetime(data['time'])
-                    states_code, message = DataBaseUtils.add_record(name=data['name'],time=time,seller='yaki.guo')
+                    states_code, message = DataBaseUtils.add_record(name=data['name'], time=time, seller='yaki.guo')
             elif data.get('method') == 'edit':
                 # ToDo:修改销售记录
                 if not data.get('id') or not data.get('name') or not data.get('time'):
                     states_code, message = 400, '参数不能为空!'
                 else:
                     time = DataBaseUtils.datepicker_2_datetime(data['time'])
-                    states_code, message = DataBaseUtils.edit_record(data['id'],data['name'],time)
+                    states_code, message = DataBaseUtils.edit_record(data['id'], data['name'], time)
             else:
                 states_code, message = 400, 'Bad request.'
         except Exception as e:
@@ -58,7 +58,7 @@ class RecordView(MethodView):
         if data.get('id'):
             states_code, message = DataBaseUtils.delete_record(data['id'])
         else:
-            states_code, message = 404,'Not found.'
+            states_code, message = 404, 'Not found.'
         return jsonify({
             "code": states_code,
             "message": message,
@@ -72,7 +72,17 @@ class DetailView(MethodView):
     """
 
     def get(self):
-        return render_template('excitation/detail.html', segment='excitation_detail')
+        record = DataBaseUtils.query_record(seller='yaki.guo')
+        data = {"record": record, "select_index": record[0].id}
+        if request.args.get('record_id'):
+            details = DataBaseUtils.query_detail(record_id=request.args['record_id'])
+            data["select_index"] = int(request.args.get('record_id'))
+        else:
+            details = DataBaseUtils.query_detail(record_id=record[0].id)  # 默认展示第一个option的策略
+        if details:
+            data['details'] = details
+
+        return render_template('excitation/detail.html', segment='excitation_detail', data=data)
 
     def post(self):
         try:
@@ -80,11 +90,14 @@ class DetailView(MethodView):
             if not data.get('method'):
                 states_code, message = 404, 'Method not none.'
             elif data.get('method') == 'add':
-                # ToDo:添加销售明细
-                if not data.get('way_id') or not data.get('price') or not data.get('percentage'):
+                if not data.get('record_id') or not data.get('model_id') or not data.get('price') or not data.get(
+                        'time') or not data.get('number'):
                     states_code, message = 400, '参数不能为空!'
                 else:
-                    states_code, message = 200, 'OK'
+                    time = DataBaseUtils.datepicker_2_datetime(data['time'])
+                    states_code, message = DataBaseUtils.add_detail(record_id=data['record_id'],
+                                                                    model_id=data['model_id'], price=data['price'],
+                                                                    time=time, number=data['number'])
             elif data.get('method') == 'edit':
                 # ToDo:修改销售明细
                 if not data.get('way_id') or not data.get('price') or not data.get('percentage'):
@@ -100,5 +113,3 @@ class DetailView(MethodView):
             "message": message,
             "data": '',
         })
-
-
