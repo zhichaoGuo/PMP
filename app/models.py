@@ -299,7 +299,7 @@ class DataBaseUtils:
     @staticmethod
     def query_record(seller):
         try:
-            data = Record.query.filter_by(seller=seller).all()
+            data = Record.query.filter_by(seller=seller).order_by(Record.sale_time.desc())  # 按时间倒序排列
             return data
         except Exception as e:
             print(e)
@@ -324,8 +324,13 @@ class DataBaseUtils:
         pass
 
     @staticmethod
-    def query_detail(record_id):  # ToDo
-        pass
+    def query_detail(record_id):
+        try:
+            data = Detail.query.filter_by(record_id=record_id).all()
+            return data
+        except Exception as e:
+            print(e)
+            return False
 
     @staticmethod
     def datepicker_2_datetime(picker: str):

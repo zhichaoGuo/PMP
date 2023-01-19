@@ -79,7 +79,7 @@
                                       </span>
                                       <select class="form-select mb-0" id="m_model" name="" aria-label="Gender select example" onchange="chose_model()">
                                             {% for m in data.models %}
-                                                {% if m.id == data.select_index %}
+                                                {% if m.id == data.select_index2 %}
                                                     <option value="{{m.id}}" selected>{{m.name}}</option>
                                                 {% else %}
                                                     <option value="{{m.id}}">{{m.name}}</option>
