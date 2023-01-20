@@ -91,21 +91,35 @@ class DetailView(MethodView):
             if not data.get('method'):
                 states_code, message = 404, 'Method not none.'
             elif data.get('method') == 'add':
-                if not data.get('record_id') or not data.get('model_id') or not data.get('price') or not data.get('number'):
+                if not data.get('record_id') or not data.get('model_id') or not data.get('price') or not data.get(
+                        'number'):
                     states_code, message = 400, '参数不能为空!'
                 else:
                     states_code, message = DataBaseUtils.add_detail(record_id=data['record_id'],
-                                                                    model_id=data['model_id'], price=data['price'],number=data['number'])
+                                                                    model_id=data['model_id'], price=data['price'],
+                                                                    number=data['number'])
             elif data.get('method') == 'edit':
                 # ToDo:修改销售明细
-                if not data.get('way_id') or not data.get('price') or not data.get('percentage'):
+                if not data.get('id') or not data.get('price') or not data.get('number'):
                     states_code, message = 400, '参数不能为空!'
                 else:
-                    states_code, message = 200, 'OK'
+                    states_code, message = DataBaseUtils.edit_detail(detail_id=data['id'], price=data['price'],
+                                                                     number=data['number'])
             else:
                 states_code, message = 400, 'Bad request.'
         except Exception as e:
             states_code, message = 400, str(e)
+        return jsonify({
+            "code": states_code,
+            "message": message,
+            "data": '',
+        })
+    def delete(self):
+        data = request.get_json()
+        if data.get('id'):
+            states_code, message = DataBaseUtils.delete_detail(data['id'])
+        else:
+            states_code, message = 404, 'Not found.'
         return jsonify({
             "code": states_code,
             "message": message,
