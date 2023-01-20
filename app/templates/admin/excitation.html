@@ -28,11 +28,10 @@
   <div class="row mb-4">
     <div class="col-log-4 col-sm-3">
         <div class="row">
-            <div class="col-1 align-items-center"></div>
-            <div class="col-3 align-items-center">
+            <div class="col-5 align-items-center">
                 <h3 >型号></h3>
             </div>
-            <div class="col-8">
+            <div class="col-7">
                 <select class="form-select mb-0" id="models" aria-label="Gender select example" onchange="select_exc()">
                     {% for m in data.models %}
                         {% if m.id == data.select_index %}

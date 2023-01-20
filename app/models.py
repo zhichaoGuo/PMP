@@ -316,17 +316,29 @@ class DataBaseUtils:
             return 400, str(e)
 
     @staticmethod
-    def delete_detail():  # ToDo
-        pass
+    def delete_detail(detail_id):
+        try:
+            delete = Detail.query.filter_by(id=detail_id).delete()
+            db.session.commit()
+            return 200, 'OK'
+        except Exception as e:
+            return 400, str(e)
 
     @staticmethod
-    def edit_detail():  # ToDo
-        pass
+    def edit_detail(detail_id, price, number):
+        try:
+            edit = Detail.query.filter_by(id=detail_id).update({"sale_price": price, "sale_number": number})
+            db.session.commit()
+            return 200, 'OK'
+        except Exception as e:
+            return 400, str(e)
 
     @staticmethod
     def query_detail(record_id):
         try:
             data = Detail.query.filter_by(record_id=record_id).all()
+            for detail in data:
+                detail.model_id = Model.query.filter_by(id=detail.model_id).first().name
             return data
         except Exception as e:
             print(e)
