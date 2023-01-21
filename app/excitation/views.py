@@ -12,27 +12,19 @@ class ExcitationView(MethodView):
     """
 
     def get(self):
-        data = DataBaseUtils.query_all_record('yaki.guo')
-        ret = {}
-        rec = []
+        global_settings = DataBaseUtils.get_global_settings()
+        data = DataBaseUtils.query_all_record('yaki.guo', start_time=global_settings['start_time'])
+        setting = {"settings": global_settings, "number_limit": 0}
+        setting["settings"]["start_number"] = int(setting["settings"]["start_number"])
         for d in data:
-            if d.Record.id not in rec:
-                rec.append(d.Record.id)
-                ret[d.Record.id] = {"sale_time": d.Record.sale_time,
-                                    "name": d.Record.name,
-                                    "seller": d.Record.seller,
-                                    "model": [d.Model.name],
-                                    "sale_price": [d.Detail.sale_price],
-                                    "sale_number": [d.Detail.sale_number],
-                                    "sum": [d.Detail.sale_price * d.Detail.sale_number]}
-            else:
-                ret[d.Record.id]["model"].append(d.Model.name)
-                ret[d.Record.id]["sale_price"].append(d.Detail.sale_price)
-                ret[d.Record.id]["sale_number"].append(d.Detail.sale_number)
-                ret[d.Record.id]["sum"].append(d.Detail.sale_price * d.Detail.sale_number)
-        for r in ret:
-            ret[r]['all'] = sum(ret[r]['sum'])
-        return render_template('excitation/all_record.html', segment='excitation_all', data=ret)
+            setting['number_limit'] += data[d]['all_number']
+
+
+        return render_template('excitation/all_record.html', segment='excitation_all', data=data, setting=setting)
+
+    def post(self):
+        DataBaseUtils.query_all_record_in_limit('yaki.guo', '2023-1-3')
+        return '200'
 
 
 class RecordView(MethodView):

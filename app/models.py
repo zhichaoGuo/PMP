@@ -351,7 +351,39 @@ class DataBaseUtils:
         return datetime.date(year=int(time[0]), month=int(time[1]), day=int(time[2]))
 
     @staticmethod
-    def query_all_record(seller):
-        data = db.session.query(Detail,Record,Model).join(Record,Detail.record_id == Record.id).join(Model,Detail.model_id==Model.id).filter(Record.seller==seller).order_by(Record.sale_time.desc()).all()
-        return data
+    def query_all_record(seller, start_time='2000-1-1'):
+        time = DataBaseUtils.datepicker_2_datetime(start_time)
+        data = db.session.query(Detail, Record, Model) \
+            .join(Record, Detail.record_id == Record.id) \
+            .join(Model, Detail.model_id == Model.id) \
+            .filter(Record.seller == seller) \
+            .filter(Record.sale_time.__ge__(time)) \
+            .order_by(Record.sale_time.desc()).all()
+        ret = {}
+        rec = []
+        for d in data:
+            if d.Record.id not in rec:
+                rec.append(d.Record.id)
+                ret[d.Record.id] = {"sale_time": d.Record.sale_time,
+                                    "name": d.Record.name,
+                                    "seller": d.Record.seller,
+                                    "model": [d.Model.name],
+                                    "sale_price": [d.Detail.sale_price],
+                                    "sale_number": [d.Detail.sale_number],
+                                    "sum": [d.Detail.sale_price * d.Detail.sale_number]}
+            else:
+                ret[d.Record.id]["model"].append(d.Model.name)
+                ret[d.Record.id]["sale_price"].append(d.Detail.sale_price)
+                ret[d.Record.id]["sale_number"].append(d.Detail.sale_number)
+                ret[d.Record.id]["sum"].append(d.Detail.sale_price * d.Detail.sale_number)
+        for r in ret:
+            ret[r]['all'] = sum(ret[r]['sum'])
+            ret[r]['all_number'] = sum(ret[r]['sale_number'])
+        print(ret)
+        return ret
 
+    @staticmethod
+    def query_all_record_in_limit(seller, start_time):
+        time = DataBaseUtils.datepicker_2_datetime(start_time)
+        return Record.query.filter_by(seller=seller).filter(Record.sale_time.__ge__(time)).order_by(
+            Record.sale_time).all()
