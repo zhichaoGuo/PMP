@@ -349,3 +349,9 @@ class DataBaseUtils:
         """picker = yyyy-mm-dd"""
         time = picker.split('-')
         return datetime.date(year=int(time[0]), month=int(time[1]), day=int(time[2]))
+
+    @staticmethod
+    def query_all_record(seller):
+        data = db.session.query(Detail,Record,Model).join(Record,Detail.record_id == Record.id).join(Model,Detail.model_id==Model.id).filter(Record.seller==seller).order_by(Record.sale_time.desc()).all()
+        return data
+

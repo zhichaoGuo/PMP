@@ -12,7 +12,27 @@ class ExcitationView(MethodView):
     """
 
     def get(self):
-        return render_template('excitation/all_record.html', segment='excitation_all')
+        data = DataBaseUtils.query_all_record('yaki.guo')
+        ret = {}
+        rec = []
+        for d in data:
+            if d.Record.id not in rec:
+                rec.append(d.Record.id)
+                ret[d.Record.id] = {"sale_time": d.Record.sale_time,
+                                    "name": d.Record.name,
+                                    "seller": d.Record.seller,
+                                    "model": [d.Model.name],
+                                    "sale_price": [d.Detail.sale_price],
+                                    "sale_number": [d.Detail.sale_number],
+                                    "sum": [d.Detail.sale_price * d.Detail.sale_number]}
+            else:
+                ret[d.Record.id]["model"].append(d.Model.name)
+                ret[d.Record.id]["sale_price"].append(d.Detail.sale_price)
+                ret[d.Record.id]["sale_number"].append(d.Detail.sale_number)
+                ret[d.Record.id]["sum"].append(d.Detail.sale_price * d.Detail.sale_number)
+        for r in ret:
+            ret[r]['all'] = sum(ret[r]['sum'])
+        return render_template('excitation/all_record.html', segment='excitation_all', data=ret)
 
 
 class RecordView(MethodView):
@@ -114,6 +134,7 @@ class DetailView(MethodView):
             "message": message,
             "data": '',
         })
+
     def delete(self):
         data = request.get_json()
         if data.get('id'):
