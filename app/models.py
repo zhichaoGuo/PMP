@@ -279,9 +279,10 @@ class DataBaseUtils:
             return 400, str(e)
 
     @staticmethod
-    def delete_record(id):  # ToDo:删除名下的明细
+    def delete_record(id):
         try:
             dele = Record.query.filter_by(id=id).delete()
+            DataBaseUtils.delete_detail(record_id=id)
             db.session.commit()
             return 200, 'OK'
         except Exception as e:
@@ -316,9 +317,14 @@ class DataBaseUtils:
             return 400, str(e)
 
     @staticmethod
-    def delete_detail(detail_id):
+    def delete_detail(detail_id=None,record_id=None):
         try:
-            delete = Detail.query.filter_by(id=detail_id).delete()
+            if not detail_id and not record_id:
+                return 404, 'Not found.'
+            elif detail_id:
+                delete = Detail.query.filter_by(id=detail_id).delete()
+            elif record_id:
+                delete = Detail.query.filter_by(record_id=record_id).delete()
             db.session.commit()
             return 200, 'OK'
         except Exception as e:

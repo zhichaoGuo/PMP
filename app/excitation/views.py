@@ -130,7 +130,7 @@ class DetailView(MethodView):
     def delete(self):
         data = request.get_json()
         if data.get('id'):
-            states_code, message = DataBaseUtils.delete_detail(data['id'])
+            states_code, message = DataBaseUtils.delete_detail(detail_id=data['id'])
         else:
             states_code, message = 404, 'Not found.'
         return jsonify({
