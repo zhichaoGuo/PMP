@@ -1,7 +1,7 @@
 from flask import render_template, request, redirect, url_for, Blueprint, jsonify
 from flask.views import MethodView
 
-from app.models import DataBaseUtils
+from app.models import DataBaseUtils, Model
 
 excitation = Blueprint('excitation', __name__)
 
@@ -22,9 +22,8 @@ class ExcitationView(MethodView):
 
         return render_template('excitation/all_record.html', segment='excitation_all', data=data, setting=setting)
 
-    def post(self):
-        DataBaseUtils.query_all_record_in_limit('yaki.guo', '2023-1-3')
-        return '200'
+    def post(self):  # ToDo:计算percentage方法
+        return str(DataBaseUtils.query_percentage(model_id=4,price=155,sale_time='2023-3-3'))
 
 
 class RecordView(MethodView):

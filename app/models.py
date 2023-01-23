@@ -16,6 +16,15 @@ class Model(db.Model):  # 型号表
     def __repr__(self):
         return str(self.name)
 
+    def query_percentage(self,price,sale_time):
+        time = DataBaseUtils.datepicker_2_datetime(sale_time)
+        data = Way.query.filter_by(model_id=self.id).filter(Way.start_time.__le__(time)) \
+            .order_by(Way.start_time.desc()).first()
+        if data:
+            return data.query_percentage(price)
+        else:
+            return 0
+
 
 class Way(db.Model):  # 激励策略表
     __tablename__ = 'Way'
@@ -25,6 +34,14 @@ class Way(db.Model):  # 激励策略表
     name = db.Column(db.String(64), unique=True)
     start_time = db.Column(db.Date, default=datetime.date.today())
     status = db.Column(db.Boolean(), default=False)
+
+    def query_percentage(self, price):
+        data = Node.query.filter_by(way_id=self.id).filter(Node.price.__le__(price)).order_by(-Node.price).first()
+        if data:
+            percentage = data.percentage
+        else:
+            percentage = 0
+        return percentage
 
 
 class Node(db.Model):  # 激励节点表
@@ -109,6 +126,14 @@ class DataBaseUtils:
         except Exception as e:
             return 400, e
 
+
+    @staticmethod
+    def query_model(model_id):
+        model = Model.query.filter_by(id=model_id).first()
+        if model:
+            return model
+        else:
+            return False
     @staticmethod
     def query_models():
         all = Model.query.all()
@@ -117,6 +142,9 @@ class DataBaseUtils:
     @staticmethod
     def add_way(model_id, way_name, start_time):
         try:
+            data = Way.query.filter_by(model_id=model_id, start_time=start_time).first()
+            if data:
+                return 400, '同一型号下激励策略的起始时间不能相同'
             new = Way(model_id=model_id, name=way_name, start_time=start_time)
             db.session.add(new)
             db.session.commit()
@@ -317,7 +345,7 @@ class DataBaseUtils:
             return 400, str(e)
 
     @staticmethod
-    def delete_detail(detail_id=None,record_id=None):
+    def delete_detail(detail_id=None, record_id=None):
         try:
             if not detail_id and not record_id:
                 return 404, 'Not found.'
@@ -393,3 +421,7 @@ class DataBaseUtils:
         time = DataBaseUtils.datepicker_2_datetime(start_time)
         return Record.query.filter_by(seller=seller).filter(Record.sale_time.__ge__(time)).order_by(
             Record.sale_time).all()
+
+    @staticmethod
+    def query_percentage(model_id,price,sale_time):
+        return Model(id=model_id).query_percentage(price=price,sale_time=sale_time)
