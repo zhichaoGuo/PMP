@@ -45,5 +45,6 @@ class HomeView(MethodView):
     """
 
     def get(self):
-        return render_template('home/dashboard.html')
-
+        data = {"all": 150,
+                "line": [0, 10, 10, 10, 20, 25, 35, 50, 65, 80, 95, 100]}
+        return render_template('home/dashboard.html', data=data)
