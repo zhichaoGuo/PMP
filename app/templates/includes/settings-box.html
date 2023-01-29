@@ -1,0 +1,57 @@
+
+    <div class="theme-settings card bg-gray-800 pt-2 collapse" id="theme-settings">
+        <div class="card-body bg-gray-800 text-white pt-4">
+            <button type="button" class="btn-close theme-settings-close" aria-label="Close" data-bs-toggle="collapse"
+                href="#theme-settings" role="button" aria-expanded="false" aria-controls="theme-settings"></button>
+            <h1 class="h4">激励计算器</h1>
+            <div class="row">
+                <div class="col-md-4 mb-2">
+                    <div>
+                        <label for="start_number">底价</label>
+                        <input class="form-control" id="start_number" name="start_number" type="text" value="{{data['start_number']}}" required>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-2">
+                    <div>
+                        <label for="start_number">售价</label>
+                        <input class="form-control" id="start_number1" name="start_number" type="text" value="{{data['start_number']}}" required>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-2">
+                    <div>
+                        <label for="start_number">销售数量</label>
+                        <input class="form-control" id="start_number2" name="start_number" type="text" value="{{data['start_number']}}" required>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4 mb-2">
+                    <div>
+                        <label for="start_number">激励百分数</label>
+                        <input class="form-control" id="start_number3" name="start_number" type="text" value="{{data['start_number']}}" required>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-2">
+                    <div>
+                        <label for="start_number">总激励奖金</label>
+                        <input class="form-control" id="start_number4" name="start_number" type="text" value="{{data['start_number']}}" required>
+                    </div>
+                </div>
+            </div>
+            <br>
+            <a href="https://appseed.us/product/volt-dashboard/flask/" target="_blank"
+                class="btn btn-secondary d-inline-flex align-items-center justify-content-center mb-3 w-100">
+                计 算
+                <svg class="icon icon-xs ms-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M2 9.5A3.5 3.5 0 005.5 13H9v2.586l-1.293-1.293a1 1 0 00-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 15.586V13h2.5a4.5 4.5 0 10-.616-8.958 4.002 4.002 0 10-7.753 1.977A3.5 3.5 0 002 9.5zm9 3.5H9V8a1 1 0 012 0v5z" clip-rule="evenodd"></path></svg>
+            </a>
+        </div>
+    </div>
+
+    <div class="card theme-settings bg-gray-800 theme-settings-expand" id="theme-settings-expand">
+        <div class="card-body bg-gray-800 text-white rounded-top p-3 py-2">
+            <span class="fw-bold d-inline-flex align-items-center h6">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-slash-minus" viewBox="0 0 16 16"><path d="m1.854 14.854 13-13a.5.5 0 0 0-.708-.708l-13 13a.5.5 0 0 0 .708.708ZM4 1a.5.5 0 0 1 .5.5v2h2a.5.5 0 0 1 0 1h-2v2a.5.5 0 0 1-1 0v-2h-2a.5.5 0 0 1 0-1h2v-2A.5.5 0 0 1 4 1Zm5 11a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5A.5.5 0 0 1 9 12Z"/></svg>
+                 _激励计算器
+            </span>
+        </div>
+    </div>
