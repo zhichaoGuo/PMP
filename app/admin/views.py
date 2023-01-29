@@ -188,3 +188,29 @@ class NodeView(MethodView):
             "message": message,
             'data': return_data,
         })
+
+
+class CalculatorView(MethodView):
+    """
+    激励计算器
+    """
+
+    def post(self):
+        data = request.get_json()
+        if not data.get('floor_price') or not data.get('price') or not data.get('number'):
+            states_code, message = 400, '底价、售价和销售数量不能为空'
+        else:
+            if not data.get('percentage') and data.get('reward'):
+                data['percentage'] = float(data.get('reward'))/(float(data.get('price')) - float(data.get('floor_price')))/ int(data.get('number'))
+                states_code, message = 200, '计算激励百分比'
+            elif data.get('percentage') and not data.get('reward'):
+                data['reward'] = (float(data.get('price')) - float(data.get('floor_price')))*float(data.get('percentage'))*int(data.get('number'))
+                states_code, message = 200, '计算总激励奖金'
+            else:
+                states_code, message = 400, '激励百分比和总激励奖金需要且只需要填写一处'
+
+        return jsonify({
+            "code": states_code,
+            "message": message,
+            'data': data,
+        })
