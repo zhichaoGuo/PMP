@@ -16,7 +16,7 @@ class Model(db.Model):  # 型号表
     def __repr__(self):
         return str(self.name)
 
-    def query_percentage(self,price,sale_time):
+    def query_percentage(self, price, sale_time):
         time = DataBaseUtils.datepicker_2_datetime(sale_time)
         data = Way.query.filter_by(model_id=self.id).filter(Way.start_time.__le__(time)) \
             .order_by(Way.start_time.desc()).first()
@@ -126,7 +126,6 @@ class DataBaseUtils:
         except Exception as e:
             return 400, e
 
-
     @staticmethod
     def query_model(model_id):
         model = Model.query.filter_by(id=model_id).first()
@@ -134,6 +133,7 @@ class DataBaseUtils:
             return model
         else:
             return False
+
     @staticmethod
     def query_models():
         all = Model.query.all()
@@ -295,6 +295,7 @@ class DataBaseUtils:
                 new_setting = Global(key=s, value=settings[s])
                 db.session.add(new_setting)
         db.session.commit()
+        return 200, 'OK'
 
     @staticmethod
     def add_record(name, time, seller):
@@ -385,13 +386,18 @@ class DataBaseUtils:
         return datetime.date(year=int(time[0]), month=int(time[1]), day=int(time[2]))
 
     @staticmethod
-    def query_all_record(seller, start_time='2000-1-1'):
-        time = DataBaseUtils.datepicker_2_datetime(start_time)
+    def query_all_record(seller, start_time='2000-1-1', end_time=''):
+        start_time_format = DataBaseUtils.datepicker_2_datetime(start_time)
+        if not end_time:
+            end_time_format = datetime.date.today()
+        else:
+            end_time_format = DataBaseUtils.datepicker_2_datetime(end_time)
         data = db.session.query(Detail, Record, Model) \
             .join(Record, Detail.record_id == Record.id) \
             .join(Model, Detail.model_id == Model.id) \
             .filter(Record.seller == seller) \
-            .filter(Record.sale_time.__ge__(time)) \
+            .filter(Record.sale_time.__ge__(start_time_format)) \
+            .filter(Record.sale_time.__le__(end_time_format)) \
             .order_by(Record.sale_time.desc()).all()
         ret = {}
         rec = []
@@ -423,5 +429,5 @@ class DataBaseUtils:
             Record.sale_time).all()
 
     @staticmethod
-    def query_percentage(model_id,price,sale_time):
-        return Model(id=model_id).query_percentage(price=price,sale_time=sale_time)
+    def query_percentage(model_id, price, sale_time):
+        return Model(id=model_id).query_percentage(price=price, sale_time=sale_time)

@@ -17,8 +17,15 @@ class GlobalView(MethodView):
 
     def post(self):
         data = request.get_json()
-        DataBaseUtils.set_global_settings(data)
-        return redirect(url_for('admin.global'))
+        if DataBaseUtils.datepicker_2_datetime(data.get('start_time')) >= DataBaseUtils.datepicker_2_datetime(data.get('end_time')):
+            states_code, message = 400, '激励计算开始时间应晚于结束时间！'
+        else:
+            states_code, message = DataBaseUtils.set_global_settings(data)
+        return jsonify({
+            'code': states_code,
+            'message': message,
+            'data': '',
+        })
 
 
 class ModelView(MethodView):

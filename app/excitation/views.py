@@ -13,7 +13,7 @@ class ExcitationView(MethodView):
 
     def get(self):
         global_settings = DataBaseUtils.get_global_settings()
-        data = DataBaseUtils.query_all_record('yaki.guo', start_time=global_settings['start_time'])
+        data = DataBaseUtils.query_all_record('yaki.guo', start_time=global_settings['start_time'],end_time=global_settings['end_time'])
         setting = {"settings": global_settings, "number_limit": 0}
         setting["settings"]["start_number"] = int(setting["settings"]["start_number"])
         for d in data:
