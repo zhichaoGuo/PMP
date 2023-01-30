@@ -21,10 +21,13 @@ class GlobalView(MethodView):
     @login_required
     def post(self):
         data = request.get_json()
-        if DataBaseUtils.datepicker_2_datetime(data.get('start_time')) >= DataBaseUtils.datepicker_2_datetime(data.get('end_time')):
+        if DataBaseUtils.datepicker_2_datetime(data.get('start_time')) >= DataBaseUtils.datepicker_2_datetime(
+                data.get('end_time')):
             states_code, message = 400, '激励计算开始时间应晚于结束时间！'
         else:
             states_code, message = DataBaseUtils.set_global_settings(data)
+        current_app.logger.info(
+            'User: %s -> set global settings : %s -> ret : %s' % (session.get("username"), data, states_code))
         return jsonify({
             'code': states_code,
             'message': message,
@@ -50,13 +53,20 @@ class ModelView(MethodView):
             states_code, message = 400, '参数不能为空!'
         elif data['method'] == 'add':
             states_code, message = DataBaseUtils.add_model(data['model'])
+            current_app.logger.info(
+                'User: %s -> add model : %s -> ret : %s,%s' % (session.get("username"), data, states_code, message))
         elif data['method'] == 'edit':
             if not data.get('model_id'):
                 states_code, message = 400, '参数不能为空!'
+                current_app.logger.warn(
+                    'User: %s -> edit model :%s -> ret:%s' % (session.get("username"), data, message))
             else:
                 states_code, message = DataBaseUtils.edit_model(data['model_id'], data['model'])
+                current_app.logger.info('User: %s -> edit model : %s -> ret : %s,%s' % (
+                session.get("username"), data, states_code, message))
         else:
             states_code, message = 400, 'method 字段无法识别.'
+            current_app.logger.warn('User: %s -> post model :%s -> ret:%s' % (session.get("username"), data, message))
         return jsonify({
             'code': states_code,
             'message': message,
@@ -67,6 +77,8 @@ class ModelView(MethodView):
     def delete(self):
         data = request.get_json()
         states_code, message = DataBaseUtils.delete_model(data['id'])
+        current_app.logger.warn(
+            'User: %s -> delete model : %s -> ret : %s,%s' % (session.get("username"), data, states_code, message))
         return jsonify({
             "code": states_code,
             "message": message,
@@ -104,6 +116,8 @@ class ExcitationView(MethodView):
         elif data.get('method') == 'add':
             if not data.get('start_time') or not data.get('name') or not data.get('model'):
                 states_code, message = 400, '参数不能为空!'
+                current_app.logger.warn(
+                    'User: %s -> add excitation : %s -> ret : %s' % (session.get("username"), data, message))
             else:
                 time = DataBaseUtils.datepicker_2_datetime(data['start_time'])
                 model = Model.query.filter_by(name=data['model']).first()
@@ -112,18 +126,26 @@ class ExcitationView(MethodView):
                     states_code, message = DataBaseUtils.add_way(data['model_id'], data['name'], time)
                 else:
                     states_code, message = 404, 'Not found.'
+                    current_app.logger.warn(
+                        'User: %s -> add excitation : %s -> ret : %s' % (session.get("username"), data, message))
         elif data.get('method') == 'query':
             return_data = DataBaseUtils.query_nodes(data.get('id'))  # ToDo:添加根据way id 查询node信息的内容
             if return_data:
                 states_code, message = 200, 'OK'
             else:
                 states_code, message = 404, 'Not found.'
+                current_app.logger.warn(
+                    'User: %s -> query excitation : %s -> ret : %s' % (session.get("username"), data, message))
         elif data.get('method') == 'edit':
             if not data.get('start_time') or not data.get('name') or not data.get('id'):
                 states_code, message = 400, '参数不能为空!'
+                current_app.logger.warn(
+                    'User: %s -> edit excitation : %s -> ret : %s' % (session.get("username"), data, message))
             else:
                 time = DataBaseUtils.datepicker_2_datetime(data['start_time'])
                 states_code, message = DataBaseUtils.edit_way(data.get('id'), data.get('name'), time)
+                current_app.logger.info('User: %s -> edit excitation : %s -> ret : %s,%s' % (
+                    session.get("username"), data, states_code, message))
         else:
             states_code, message = 400, 'Bad request.'
         return jsonify({
@@ -136,6 +158,8 @@ class ExcitationView(MethodView):
     def delete(self):
         data = request.get_json()
         states_code, message = DataBaseUtils.delete_way(way_id=data['id'])
+        current_app.logger.warn('User: %s -> delete excitation : %s -> ret : %s,%s' % (
+            session.get("username"), data, states_code, message))
         return jsonify({
             "code": states_code,
             "message": message,
@@ -191,9 +215,13 @@ class NodeView(MethodView):
             else:
                 states_code, message = DataBaseUtils.add_node(data.get('way_id'), data.get('price'),
                                                               data.get('percentage'))
+            current_app.logger.info('User: %s -> add node : %s -> ret : %s,%s' % (
+                session.get("username"), data, states_code, message))
         elif data.get('method') == 'edit':
             states_code, message = DataBaseUtils.edit_node(data.get('node_id'), data.get('price'),
                                                            data.get('percentage'))
+            current_app.logger.info('User: %s -> edit node : %s -> ret : %s,%s' % (
+                session.get("username"), data, states_code, message))
         else:
             states_code, message = 400, 'Bad request.'
         return jsonify({
@@ -207,6 +235,8 @@ class NodeView(MethodView):
         data = request.get_json()
         return_data = ''
         states_code, message = DataBaseUtils.delete_node(node_id=data['id'])
+        current_app.logger.warn('User: %s -> delete node : %s -> ret : %s,%s' % (
+            session.get("username"), data, states_code, message))
         return jsonify({
             "code": states_code,
             "message": message,
@@ -226,10 +256,12 @@ class CalculatorView(MethodView):
             states_code, message = 400, '底价、售价和销售数量不能为空'
         else:
             if not data.get('percentage') and data.get('reward'):
-                data['percentage'] = float(data.get('reward'))/(float(data.get('price')) - float(data.get('floor_price')))/ int(data.get('number'))
+                data['percentage'] = float(data.get('reward')) / (
+                        float(data.get('price')) - float(data.get('floor_price'))) / int(data.get('number'))
                 states_code, message = 200, '计算激励百分比'
             elif data.get('percentage') and not data.get('reward'):
-                data['reward'] = (float(data.get('price')) - float(data.get('floor_price')))*float(data.get('percentage'))*int(data.get('number'))
+                data['reward'] = (float(data.get('price')) - float(data.get('floor_price'))) * float(
+                    data.get('percentage')) * int(data.get('number'))
                 states_code, message = 200, '计算总激励奖金'
             else:
                 states_code, message = 400, '激励百分比和总激励奖金需要且只需要填写一处'

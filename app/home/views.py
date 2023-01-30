@@ -16,12 +16,11 @@ class LoginView(MethodView):
     """
 
     def get(self):
-        current_app.logger.info('-> LoginView')
+        current_app.logger.info('IP: %s -> LoginView' % request.remote_addr)
         # 已登录跳转到index
         if session.get('username') is not None:
             return redirect(url_for('index.index'))
-        login_form = LoginForm(request.form)
-        return render_template('home/login.html', form=login_form)
+        return render_template('home/login.html', form=LoginForm(request.form))
 
     def post(self):
         username = request.form.get('username')
@@ -30,16 +29,10 @@ class LoginView(MethodView):
         # 前端已加防范，后端再防一手
         if username is None:
             current_app.logger.error('login with out username!')
-            return jsonify({
-                'code': 400,
-                'message': '请输入用户名',
-                'data': '', })
+            return render_template('home/login.html', form=LoginForm(request.form), msg='请输入用户名!')
         if password is None:
             current_app.logger.error('login with out password!')
-            return jsonify({
-                'code': 400,
-                'message': '请输入密码',
-                'data': '', })
+            return render_template('home/login.html', form=LoginForm(request.form), msg='请输入密码!')
         test = current_app.ldap.bind_user(username, password)
         # 查询到用户
         if test is not None:
@@ -54,7 +47,7 @@ class LoginView(MethodView):
             else:
                 # 不在用户表中，添加进用户表
                 current_app.logger.debug('new user:%s wire into DB!' % username)
-                DataBaseUtils.record_user(username,request.remote_addr)
+                DataBaseUtils.record_user(username, request.remote_addr)
                 user = User.query.filter_by(username=username).first()
             # 记录登录信息
             login_user(user)
@@ -63,11 +56,7 @@ class LoginView(MethodView):
             return redirect(url_for('home.home'))
         # 未通过ldap验证
         current_app.logger.info('user:%s is login failed!' % username)
-        return jsonify({
-            'code': 1,
-            'message': '用户名或密码错误',
-            'data': '',
-        })
+        return render_template('home/login.html', form=LoginForm(request.form), msg='用户名或密码错误!')
 
 
 class LogoutView(MethodView):
@@ -76,7 +65,7 @@ class LogoutView(MethodView):
     """
 
     def get(self):
-        current_app.logger.info('-> LogoutView')
+        current_app.logger.info('User: %s -> LogoutView' % session.get("username"))
         username = session.get("username")
         session.clear()
         logout_user()

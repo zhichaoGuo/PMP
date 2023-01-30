@@ -16,7 +16,7 @@ class ExcitationView(MethodView):
     def get(self):
         current_app.logger.info('User: %s -> ExcitationView' % session.get("username"))
         global_settings = DataBaseUtils.get_global_settings()
-        data = DataBaseUtils.query_all_record('yaki.guo', start_time=global_settings['start_time'],
+        data = DataBaseUtils.query_all_record(session.get("username"), start_time=global_settings['start_time'],
                                               end_time=global_settings['end_time'])
         setting = {"settings": global_settings, "number_limit": 0}
         setting["settings"]["start_number"] = int(setting["settings"]["start_number"])
@@ -38,7 +38,7 @@ class RecordView(MethodView):
     @login_required
     def get(self):
         current_app.logger.info('User: %s -> RecordView' % session.get("username"))
-        data = DataBaseUtils.query_record(seller='yaki.guo')
+        data = DataBaseUtils.query_record(seller=session.get("username"))
         return render_template('excitation/record.html', segment='excitation_record', data=data)
 
     @login_required
@@ -48,23 +48,27 @@ class RecordView(MethodView):
             if not data.get('method'):
                 states_code, message = 404, 'Method not none.'
             elif data.get('method') == 'add':
-                # ToDo:添加销售记录
                 if not data.get('name') or not data.get('time'):
                     states_code, message = 400, '参数不能为空!'
                 else:
                     time = DataBaseUtils.datepicker_2_datetime(data['time'])
-                    states_code, message = DataBaseUtils.add_record(name=data['name'], time=time, seller='yaki.guo')
+                    states_code, message = DataBaseUtils.add_record(name=data['name'], time=time, seller=session.get("username"))
+                current_app.logger.info('User: %s -> add record : %s -> ret : %s,%s' % (
+                    session.get("username"), data, states_code, message))
             elif data.get('method') == 'edit':
-                # ToDo:修改销售记录
                 if not data.get('id') or not data.get('name') or not data.get('time'):
                     states_code, message = 400, '参数不能为空!'
                 else:
                     time = DataBaseUtils.datepicker_2_datetime(data['time'])
                     states_code, message = DataBaseUtils.edit_record(data['id'], data['name'], time)
+                current_app.logger.info('User: %s -> edit record : %s -> ret : %s,%s' % (
+                    session.get("username"), data, states_code, message))
             else:
                 states_code, message = 400, 'Bad request.'
         except Exception as e:
             states_code, message = 400, str(e)
+            current_app.logger.error('User: %s -> post record : %s -> ret : %s,%s' % (
+                session.get("username"), data, states_code, message))
         return jsonify({
             "code": states_code,
             "message": message,
@@ -78,6 +82,8 @@ class RecordView(MethodView):
             states_code, message = DataBaseUtils.delete_record(data['id'])
         else:
             states_code, message = 404, 'Not found.'
+        current_app.logger.warn('User: %s -> delete record : %s -> ret : %s,%s' % (
+            session.get("username"), data, states_code, message))
         return jsonify({
             "code": states_code,
             "message": message,
@@ -93,9 +99,9 @@ class DetailView(MethodView):
     @login_required
     def get(self):
         current_app.logger.info('User: %s -> DetailView' % session.get("username"))
-        record = DataBaseUtils.query_record(seller='yaki.guo')
+        record = DataBaseUtils.query_record(seller=session.get("username"))
         models = DataBaseUtils.query_models()
-        select_index = record[0].id if record.is_select else 0
+        select_index = record[0].id if record else 0
         select_index2 = models[0].id if models else 0
         data = {"record": record, "select_index": select_index, "models": models, "select_index2": select_index2}
         if request.args.get('record_id'):
@@ -122,6 +128,8 @@ class DetailView(MethodView):
                     states_code, message = DataBaseUtils.add_detail(record_id=data['record_id'],
                                                                     model_id=data['model_id'], price=data['price'],
                                                                     number=data['number'])
+                current_app.logger.info('User: %s -> add detail : %s -> ret : %s,%s' % (
+                    session.get("username"), data, states_code, message))
             elif data.get('method') == 'edit':
                 # ToDo:修改销售明细
                 if not data.get('id') or not data.get('price') or not data.get('number'):
@@ -129,10 +137,14 @@ class DetailView(MethodView):
                 else:
                     states_code, message = DataBaseUtils.edit_detail(detail_id=data['id'], price=data['price'],
                                                                      number=data['number'])
+                current_app.logger.info('User: %s -> edit detail : %s -> ret : %s,%s' % (
+                    session.get("username"), data, states_code, message))
             else:
                 states_code, message = 400, 'Bad request.'
         except Exception as e:
             states_code, message = 400, str(e)
+            current_app.logger.error('User: %s -> post detail : %s -> ret : %s,%s' % (
+                session.get("username"), data, states_code, message))
         return jsonify({
             "code": states_code,
             "message": message,
@@ -146,6 +158,8 @@ class DetailView(MethodView):
             states_code, message = DataBaseUtils.delete_detail(detail_id=data['id'])
         else:
             states_code, message = 404, 'Not found.'
+        current_app.logger.warn('User: %s -> delete detail : %s -> ret : %s,%s' % (
+            session.get("username"), data, states_code, message))
         return jsonify({
             "code": states_code,
             "message": message,

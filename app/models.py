@@ -304,7 +304,7 @@ class DataBaseUtils:
     def query_nodes(way_id=None):
         try:
             if way_id:
-                way = Node.query.filter_by(way_id=way_id).order_by(Node.price)
+                way = Node.query.filter_by(way_id=way_id).order_by(Node.price).all()
             else:
                 way = Node.query.all().order_by(Node.price)
             if way:
@@ -371,7 +371,7 @@ class DataBaseUtils:
     @staticmethod
     def query_record(seller):
         try:
-            data = Record.query.filter_by(seller=seller).order_by(Record.sale_time.desc())  # 按时间倒序排列
+            data = Record.query.filter_by(seller=seller).order_by(Record.sale_time.desc()).all()  # 按时间倒序排列
             return data
         except Exception as e:
             print(e)
