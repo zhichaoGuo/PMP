@@ -1,4 +1,4 @@
-from flask import render_template, request, redirect, url_for, Blueprint
+from flask import render_template, request, redirect, url_for, Blueprint, current_app
 from flask.views import MethodView
 
 from app.forms import LoginForm
@@ -12,6 +12,7 @@ class LoginView(MethodView):
     """
 
     def get(self):
+        current_app.logger.info('-> LoginView')
         login_form = LoginForm(request.form)
 
         return render_template('home/login.html', form=login_form)
@@ -27,6 +28,7 @@ class LogoutView(MethodView):
     """
 
     def get(self):
+        current_app.logger.info('-> LogoutView')
         return redirect(url_for('home.login'))
 
 
@@ -36,6 +38,7 @@ class RootView(MethodView):
     """
 
     def get(self):
+        current_app.logger.info('-> RootView')
         return redirect(url_for('home.home'))
 
 
@@ -45,6 +48,7 @@ class HomeView(MethodView):
     """
 
     def get(self):
+        current_app.logger.info('-> HomeView')
         data = {"all": 150,
                 "line": [0, 10, 10, 10, 20, 25, 35, 50, 65, 80, 95, 100]}
         return render_template('home/dashboard.html', data=data)

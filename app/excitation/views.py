@@ -1,7 +1,7 @@
-from flask import render_template, request, redirect, url_for, Blueprint, jsonify
+from flask import render_template, request, redirect, url_for, Blueprint, jsonify, current_app
 from flask.views import MethodView
 
-from app.models import DataBaseUtils, Model
+from app.models import DataBaseUtils
 
 excitation = Blueprint('excitation', __name__)
 
@@ -12,6 +12,7 @@ class ExcitationView(MethodView):
     """
 
     def get(self):
+        current_app.logger.info('-> ExcitationView')
         global_settings = DataBaseUtils.get_global_settings()
         data = DataBaseUtils.query_all_record('yaki.guo', start_time=global_settings['start_time'],end_time=global_settings['end_time'])
         setting = {"settings": global_settings, "number_limit": 0}
@@ -32,6 +33,7 @@ class RecordView(MethodView):
     """
 
     def get(self):
+        current_app.logger.info('-> RecordView')
         data = DataBaseUtils.query_record(seller='yaki.guo')
         return render_template('excitation/record.html', segment='excitation_record', data=data)
 
@@ -83,6 +85,7 @@ class DetailView(MethodView):
     """
 
     def get(self):
+        current_app.logger.info('-> DetailView')
         record = DataBaseUtils.query_record(seller='yaki.guo')
         models = DataBaseUtils.query_models()
         data = {"record": record, "select_index": record[0].id, "models": models, "select_index2": models[0].id}

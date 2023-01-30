@@ -60,6 +60,7 @@ def configure_database(app):
 
 
 def configure_logger(my_app):
+    my_app.logger.setLevel(logging.INFO)
     formatter = logging.Formatter("[%(asctime)s][%(module)s:%(lineno)d][%(levelname)s][%(thread)d] - %(message)s")
     handler = TimedRotatingFileHandler("./Log/flask.log", when="D", interval=1, backupCount=15, encoding="UTF-8",
                                        delay=False, utc=True)

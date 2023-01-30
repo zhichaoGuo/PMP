@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, make_response, redirect, url_for, jsonify
+from flask import Blueprint, render_template, request, make_response, redirect, url_for, jsonify, current_app
 from flask.views import MethodView
 
 from app.models import DataBaseUtils, Model
@@ -12,6 +12,7 @@ class GlobalView(MethodView):
     """
 
     def get(self):
+        current_app.logger.info('-> GlobalView')
         data = DataBaseUtils.get_global_settings()
         return render_template('admin/global.html', segment='admin_global', data=data)
 
@@ -34,6 +35,7 @@ class ModelView(MethodView):
     """
 
     def get(self):
+        current_app.logger.info('-> ModelView')
         data = DataBaseUtils.query_models()
         return render_template('admin/model.html', segment='admin_model', data=data)
 
@@ -72,6 +74,7 @@ class ExcitationView(MethodView):
     """
 
     def get(self):
+        current_app.logger.info('-> ExcitationView')
         models = DataBaseUtils.query_models()
         data = {"models": models, "select_index": models[0].id}
 
@@ -136,6 +139,7 @@ class NodeView(MethodView):
     """
 
     def get(self):
+        current_app.logger.info('-> NodeView')
         data = {"models": DataBaseUtils.query_models(), "select_index": 1}
         if request.args.get('exci'):  # 指定策略
             model_index = DataBaseUtils.query_way(id=request.args.get('exci'))[0].model_id
