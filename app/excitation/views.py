@@ -14,17 +14,17 @@ class ExcitationView(MethodView):
     def get(self):
         current_app.logger.info('-> ExcitationView')
         global_settings = DataBaseUtils.get_global_settings()
-        data = DataBaseUtils.query_all_record('yaki.guo', start_time=global_settings['start_time'],end_time=global_settings['end_time'])
+        data = DataBaseUtils.query_all_record('yaki.guo', start_time=global_settings['start_time'],
+                                              end_time=global_settings['end_time'])
         setting = {"settings": global_settings, "number_limit": 0}
         setting["settings"]["start_number"] = int(setting["settings"]["start_number"])
         for d in data:
             setting['number_limit'] += data[d]['all_number']
 
-
         return render_template('excitation/all_record.html', segment='excitation_all', data=data, setting=setting)
 
     def post(self):  # ToDo:计算percentage方法
-        return str(DataBaseUtils.query_percentage(model_id=4,price=155,sale_time='2023-3-3'))
+        return str(DataBaseUtils.query_percentage(model_id=4, price=155, sale_time='2023-3-3'))
 
 
 class RecordView(MethodView):
@@ -88,12 +88,14 @@ class DetailView(MethodView):
         current_app.logger.info('-> DetailView')
         record = DataBaseUtils.query_record(seller='yaki.guo')
         models = DataBaseUtils.query_models()
-        data = {"record": record, "select_index": record[0].id, "models": models, "select_index2": models[0].id}
+        select_index = record[0].id if record.is_select else 0
+        select_index2 = models[0].id if models else 0
+        data = {"record": record, "select_index": select_index, "models": models, "select_index2": select_index2}
         if request.args.get('record_id'):
             details = DataBaseUtils.query_detail(record_id=request.args['record_id'])
             data["select_index"] = int(request.args.get('record_id'))
         else:
-            details = DataBaseUtils.query_detail(record_id=record[0].id)  # 默认展示第一个option的策略
+            details = DataBaseUtils.query_detail(record_id=select_index)  # 默认展示第一个option的策略
         if details:
             data['details'] = details
 
