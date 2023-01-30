@@ -1,5 +1,6 @@
-from flask import Blueprint, render_template, request, make_response, redirect, url_for, jsonify, current_app
+from flask import Blueprint, render_template, request, make_response, redirect, url_for, jsonify, current_app, session
 from flask.views import MethodView
+from flask_login import login_required
 
 from app.models import DataBaseUtils, Model
 
@@ -11,11 +12,13 @@ class GlobalView(MethodView):
     全局变量管理页面
     """
 
+    @login_required
     def get(self):
-        current_app.logger.info('-> GlobalView')
+        current_app.logger.info('User: %s -> GlobalView' % session.get("username"))
         data = DataBaseUtils.get_global_settings()
         return render_template('admin/global.html', segment='admin_global', data=data)
 
+    @login_required
     def post(self):
         data = request.get_json()
         if DataBaseUtils.datepicker_2_datetime(data.get('start_time')) >= DataBaseUtils.datepicker_2_datetime(data.get('end_time')):
@@ -34,11 +37,13 @@ class ModelView(MethodView):
     型号管理页面
     """
 
+    @login_required
     def get(self):
-        current_app.logger.info('-> ModelView')
+        current_app.logger.info('User: %s -> ModelView' % session.get("username"))
         data = DataBaseUtils.query_models()
         return render_template('admin/model.html', segment='admin_model', data=data)
 
+    @login_required
     def post(self):
         data = request.get_json()
         if not data.get('method') or not data.get('model'):
@@ -58,6 +63,7 @@ class ModelView(MethodView):
             'data': '',
         })
 
+    @login_required
     def delete(self):
         data = request.get_json()
         states_code, message = DataBaseUtils.delete_model(data['id'])
@@ -73,8 +79,9 @@ class ExcitationView(MethodView):
     激励策略管理页面
     """
 
+    @login_required
     def get(self):
-        current_app.logger.info('-> ExcitationView')
+        current_app.logger.info('User: %s -> ExcitationView' % session.get("username"))
         models = DataBaseUtils.query_models()
         select_index = models[0].id if models else 0
         data = {"models": models, "select_index": select_index}
@@ -88,6 +95,7 @@ class ExcitationView(MethodView):
             data['exci'] = exci
         return render_template('admin/excitation.html', segment='admin_excitation', data=data)
 
+    @login_required
     def post(self):
         data = request.get_json()
         return_data = ''
@@ -124,6 +132,7 @@ class ExcitationView(MethodView):
             'data': return_data,
         })
 
+    @login_required
     def delete(self):
         data = request.get_json()
         states_code, message = DataBaseUtils.delete_way(way_id=data['id'])
@@ -139,8 +148,9 @@ class NodeView(MethodView):
     节点管理页面
     """
 
+    @login_required
     def get(self):
-        current_app.logger.info('-> NodeView')
+        current_app.logger.info('User: %s -> NodeView' % session.get("username"))
         data = {"models": DataBaseUtils.query_models(), "select_index": 1}
         if request.args.get('exci'):  # 指定策略
             model_index = DataBaseUtils.query_way(id=request.args.get('exci'))[0].model_id
@@ -169,6 +179,7 @@ class NodeView(MethodView):
             data["node"] = node
         return render_template('admin/node.html', segment='admin_node', data=data)
 
+    @login_required
     def post(self):
         data = request.get_json()
         return_data = ""
@@ -191,6 +202,7 @@ class NodeView(MethodView):
             "data": return_data,
         })
 
+    @login_required
     def delete(self):
         data = request.get_json()
         return_data = ''
@@ -207,6 +219,7 @@ class CalculatorView(MethodView):
     激励计算器
     """
 
+    @login_required
     def post(self):
         data = request.get_json()
         if not data.get('floor_price') or not data.get('price') or not data.get('number'):

@@ -2,7 +2,7 @@ import datetime
 
 from flask import render_template, request, redirect, url_for, Blueprint, current_app, session, jsonify
 from flask.views import MethodView
-from flask_login import login_user, login_required
+from flask_login import login_user, login_required, logout_user
 
 from app.forms import LoginForm
 from app.models import DataBaseUtils, User
@@ -77,7 +77,11 @@ class LogoutView(MethodView):
 
     def get(self):
         current_app.logger.info('-> LogoutView')
-        return redirect(url_for('home.login'))
+        username = session.get("username")
+        session.clear()
+        logout_user()
+        current_app.logger.info('User: %s is logout!' % username)
+        return redirect(url_for('home.login', next=request.url))
 
 
 class RootView(MethodView):
@@ -87,7 +91,7 @@ class RootView(MethodView):
 
     @login_required
     def get(self):
-        current_app.logger.info('-> RootView')
+        current_app.logger.info('User: %s -> RootView' % session.get("username"))
         return redirect(url_for('home.home'))
 
 
@@ -98,7 +102,7 @@ class HomeView(MethodView):
 
     @login_required
     def get(self):
-        current_app.logger.info('-> HomeView')
+        current_app.logger.info('User: %s -> HomeView' % session.get("username"))
         data = {"all": 150,
                 "line": [0, 10, 10, 10, 20, 25, 35, 50, 65, 80, 95, 100]}
         return render_template('home/dashboard.html', data=data)

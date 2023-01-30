@@ -1,5 +1,6 @@
-from flask import render_template, request, redirect, url_for, Blueprint, jsonify, current_app
+from flask import render_template, request, redirect, url_for, Blueprint, jsonify, current_app, session
 from flask.views import MethodView
+from flask_login import login_required
 
 from app.models import DataBaseUtils
 
@@ -11,8 +12,9 @@ class ExcitationView(MethodView):
     销售记录页面
     """
 
+    @login_required
     def get(self):
-        current_app.logger.info('-> ExcitationView')
+        current_app.logger.info('User: %s -> ExcitationView' % session.get("username"))
         global_settings = DataBaseUtils.get_global_settings()
         data = DataBaseUtils.query_all_record('yaki.guo', start_time=global_settings['start_time'],
                                               end_time=global_settings['end_time'])
@@ -23,6 +25,7 @@ class ExcitationView(MethodView):
 
         return render_template('excitation/all_record.html', segment='excitation_all', data=data, setting=setting)
 
+    @login_required
     def post(self):  # ToDo:计算percentage方法
         return str(DataBaseUtils.query_percentage(model_id=4, price=155, sale_time='2023-3-3'))
 
@@ -32,11 +35,13 @@ class RecordView(MethodView):
     管理销售记录页面
     """
 
+    @login_required
     def get(self):
-        current_app.logger.info('-> RecordView')
+        current_app.logger.info('User: %s -> RecordView' % session.get("username"))
         data = DataBaseUtils.query_record(seller='yaki.guo')
         return render_template('excitation/record.html', segment='excitation_record', data=data)
 
+    @login_required
     def post(self):
         try:
             data = request.get_json()
@@ -66,6 +71,7 @@ class RecordView(MethodView):
             "data": '',
         })
 
+    @login_required
     def delete(self):
         data = request.get_json()
         if data.get('id'):
@@ -84,8 +90,9 @@ class DetailView(MethodView):
     管理销售明细页面
     """
 
+    @login_required
     def get(self):
-        current_app.logger.info('-> DetailView')
+        current_app.logger.info('User: %s -> DetailView' % session.get("username"))
         record = DataBaseUtils.query_record(seller='yaki.guo')
         models = DataBaseUtils.query_models()
         select_index = record[0].id if record.is_select else 0
@@ -101,6 +108,7 @@ class DetailView(MethodView):
 
         return render_template('excitation/detail.html', segment='excitation_detail', data=data)
 
+    @login_required
     def post(self):
         try:
             data = request.get_json()
@@ -131,6 +139,7 @@ class DetailView(MethodView):
             "data": '',
         })
 
+    @login_required
     def delete(self):
         data = request.get_json()
         if data.get('id'):

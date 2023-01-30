@@ -1,9 +1,28 @@
 import datetime
 
 import sqlalchemy
+from sqlalchemy import event
 from werkzeug.security import generate_password_hash
 
 from app import db
+
+
+class User(db.Model):  # 用户表
+    __tablename__ = 'users'
+    id = db.Column(db.Integer(), primary_key=True, autoincrement=True)
+    username = db.Column(db.String(63), unique=True)
+    last_login_ip = db.Column(db.String(15))
+    last_login_time = db.Column(db.DateTime(), default=datetime.datetime.now())
+    status = db.Column(db.Boolean(), default=False)
+    is_login = db.Column(db.Boolean(), default=False)
+    is_active = True
+    is_authenticated = True
+
+    def __repr__(self):
+        return self.username
+
+    def get_id(self):
+        return self.id
 
 
 class Model(db.Model):  # 型号表
@@ -88,7 +107,30 @@ class Global(db.Model):  # 全局配置表
     value = db.Column(db.String(64), nullable=False)
 
 
+@event.listens_for(Global.__table__, 'after_create')
+def init_global(*args, **kwargs):
+    settings = {"start_time": "2010-1-1",
+                "end_time": "2050-1-1",
+                "start_number": "3000"}
+    for s in settings:
+        new_setting = Global(key=s, value=settings[s])
+        db.session.add(new_setting)
+    db.session.commit()
+
+
 class DataBaseUtils:
+    @staticmethod
+    def record_user(user_name, remote_ip):
+        new_user = User(username=user_name, last_login_ip=remote_ip, last_login_time=datetime.datetime.now(),
+                        is_login=True)
+        db.session.add(new_user)
+        db.session.commit()
+
+    @staticmethod
+    def session_add_all(user):
+        db.session.add_all([user])
+        db.session.commit()
+
     @staticmethod
     def add_model(model_name):
         try:
