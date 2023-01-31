@@ -63,7 +63,7 @@ class ModelView(MethodView):
             else:
                 states_code, message = DataBaseUtils.edit_model(data['model_id'], data['model'])
                 current_app.logger.info('User: %s -> edit model : %s -> ret : %s,%s' % (
-                session.get("username"), data, states_code, message))
+                    session.get("username"), data, states_code, message))
         else:
             states_code, message = 400, 'method 字段无法识别.'
             current_app.logger.warn('User: %s -> post model :%s -> ret:%s' % (session.get("username"), data, message))

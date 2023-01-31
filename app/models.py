@@ -4,6 +4,7 @@ import sqlalchemy
 from sqlalchemy import event
 from werkzeug.security import generate_password_hash
 
+import app.config
 from app import db
 
 
@@ -24,6 +25,12 @@ class User(db.Model):  # 用户表
     def get_id(self):
         return self.id
 
+    def is_admin(self):
+        if self.username in app.config.Config.ADMIN_GROUP:
+            return True
+        else:
+            return False
+
 
 class Model(db.Model):  # 型号表
     __tablename__ = 'Model'
@@ -36,7 +43,10 @@ class Model(db.Model):  # 型号表
         return str(self.name)
 
     def query_percentage(self, price, sale_time):
-        time = DataBaseUtils.datepicker_2_datetime(sale_time)
+        if type(sale_time) is str:
+            time = DataBaseUtils.datepicker_2_datetime(sale_time)
+        else:
+            time = sale_time
         data = Way.query.filter_by(model_id=self.id).filter(Way.start_time.__le__(time)) \
             .order_by(Way.start_time.desc()).first()
         if data:
@@ -44,6 +54,17 @@ class Model(db.Model):  # 型号表
         else:
             return 0
 
+    def query_floor_price(self,sale_time):
+        if type(sale_time) is str:
+            time = DataBaseUtils.datepicker_2_datetime(sale_time)
+        else:
+            time = sale_time
+        data = Way.query.filter_by(model_id=self.id).filter(Way.start_time.__le__(time)) \
+            .order_by(Way.start_time.desc()).first()
+        if data:
+            return data.query_floor_price()
+        else:
+            return 0
 
 class Way(db.Model):  # 激励策略表
     __tablename__ = 'Way'
@@ -62,6 +83,13 @@ class Way(db.Model):  # 激励策略表
             percentage = 0
         return percentage
 
+    def query_floor_price(self):
+        data = Node.query.filter_by(way_id=self.id).order_by(Node.price).first()
+        if data:
+            floor_price = data.price
+        else:
+            floor_price = 0
+        return floor_price
 
 class Node(db.Model):  # 激励节点表
     __tablename__ = 'Node'
@@ -125,6 +153,12 @@ class DataBaseUtils:
                         is_login=True)
         db.session.add(new_user)
         db.session.commit()
+
+    @staticmethod
+    def query_all_user():
+        data = User.query.all()
+        return data
+
 
     @staticmethod
     def session_add_all(user):
@@ -452,16 +486,18 @@ class DataBaseUtils:
                                     "model": [d.Model.name],
                                     "sale_price": [d.Detail.sale_price],
                                     "sale_number": [d.Detail.sale_number],
-                                    "sum": [d.Detail.sale_price * d.Detail.sale_number]}
+                                    "sum": [d.Detail.sale_price * d.Detail.sale_number],
+                                    "excitation": [DataBaseUtils.query_percentage(model_id=d.Model.id, price=d.Detail.sale_price, sale_time=d.Record.sale_time)*d.Detail.sale_number]}
             else:
                 ret[d.Record.id]["model"].append(d.Model.name)
                 ret[d.Record.id]["sale_price"].append(d.Detail.sale_price)
                 ret[d.Record.id]["sale_number"].append(d.Detail.sale_number)
                 ret[d.Record.id]["sum"].append(d.Detail.sale_price * d.Detail.sale_number)
+                ret[d.Record.id]["excitation"].append(DataBaseUtils.query_percentage(model_id=d.Model.id, price=d.Detail.sale_price, sale_time=d.Record.sale_time)* d.Detail.sale_number)
         for r in ret:
             ret[r]['all'] = sum(ret[r]['sum'])
+            ret[r]['all_excitation'] = sum(ret[r]['excitation'])
             ret[r]['all_number'] = sum(ret[r]['sale_number'])
-        print(ret)
         return ret
 
     @staticmethod
@@ -472,4 +508,10 @@ class DataBaseUtils:
 
     @staticmethod
     def query_percentage(model_id, price, sale_time):
-        return Model(id=model_id).query_percentage(price=price, sale_time=sale_time)
+        percentage = Model(id=model_id).query_percentage(price=price, sale_time=sale_time)
+        price_floor = Model(id=model_id).query_floor_price(sale_time=sale_time)
+        if price_floor == 0:
+            price_diff = 0
+        else:
+            price_diff = price - price_floor
+        return price_diff * percentage /100

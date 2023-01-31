@@ -15,15 +15,25 @@ class ExcitationView(MethodView):
     @login_required
     def get(self):
         current_app.logger.info('User: %s -> ExcitationView' % session.get("username"))
+        admin = {"all_user": DataBaseUtils.query_all_user(), "select_index": 0}
+        if request.args.get('admin_user_name'):
+            record_user = request.args.get('admin_user_name')
+        else:
+            record_user = session.get("username")
+        if request.args.get('index'):
+            admin['select_index'] = int(request.args.get('index'))
+        else:
+            admin['select_index'] = int(session.get("_user_id"))
+        print(admin)
         global_settings = DataBaseUtils.get_global_settings()
-        data = DataBaseUtils.query_all_record(session.get("username"), start_time=global_settings['start_time'],
+        data = DataBaseUtils.query_all_record(record_user, start_time=global_settings['start_time'],
                                               end_time=global_settings['end_time'])
         setting = {"settings": global_settings, "number_limit": 0}
         setting["settings"]["start_number"] = int(setting["settings"]["start_number"])
         for d in data:
             setting['number_limit'] += data[d]['all_number']
 
-        return render_template('excitation/all_record.html', segment='excitation_all', data=data, setting=setting)
+        return render_template('excitation/all_record.html', segment='excitation_all', data=data, setting=setting,admin=admin)
 
     @login_required
     def post(self):  # ToDo:计算percentage方法

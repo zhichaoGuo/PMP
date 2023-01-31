@@ -23,6 +23,26 @@
         <div class="mb-3 mb-lg-0">
             <h1 class="h4">销售激励总览</h1>
         </div>
+        {% if current_user.is_admin() %}
+        <div class="col-log-4 col-sm-3">
+        <div class="row">
+            <div class="col-5 align-items-center">
+                <h3 >用户></h3>
+            </div>
+            <div class="col-7">
+                <select class="form-select mb-0" id="admin_user_name" aria-label="Gender select example" onchange="select_user_record()">
+                    {% for m in admin.all_user %}
+                        {% if m.id == admin.select_index %}
+                            <option value="{{m.id}}" selected>{{m.username}}</option>
+                        {% else %}
+                            <option value="{{m.id}}">{{m.username}}</option>
+                        {% endif %}
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+    </div>
+        {% endif %}
     </div>
 </div>
 <div class="row">
@@ -92,7 +112,9 @@
                         <th class="border-0">单价</th>
                         <th class="border-0">数量</th>
                         <th class="border-0">价格</th>
-                        <th class="border-0 rounded-end">总价</th>
+                        <th class="border-0">激励</th>
+                        <th class="border-0">总价</th>
+                        <th class="border-0 rounded-end">总激励</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -124,7 +146,15 @@
                           {% endfor %}
                       </td>
                       <td>
+                          {% for d in data[r]['excitation'] %}
+                          {{d}}<br>
+                          {% endfor %}
+                      </td>
+                      <td>
                           {{data[r]['all']}}
+                      </td>
+                      <td>
+                          {{data[r]['all_excitation']}}
                       </td>
 
                     </tr>
@@ -161,12 +191,18 @@
     $(document).ready(function() {
         var totalRow = 0
         $('#all_record tr').each(function() {
-            $(this).find('td:eq(8)').each(function(){
+            $(this).find('td:eq(9)').each(function(){
                     totalRow += parseFloat($(this).text());
             });
         });
         var all = document.getElementById('all');
         all.text = totalRow;
     });
+    function select_user_record() {
+        var select = document.getElementById('admin_user_name');
+        var name = select.options[select.selectedIndex].text;
+        var index = select.options[select.selectedIndex].value;
+        location.replace("?admin_user_name=" + name + "&index=" + index);
+    }
 </script>
 {% endblock javascripts %}
