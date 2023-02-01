@@ -85,9 +85,9 @@
                         <div class="d-none d-sm-block">
                             <h2 class="h6 text-gray-400 mb-0">激励情况</h2>
                             {% if setting['number_limit'] >= setting['settings']['start_number'] %}
-                            <h3 class="text-success fw-bolder">已完成</h3>
+                            <h3 class="text-success fw-bolder" id="done">已完成</h3>
                             {% else %}
-                            <h3 class="text-danger fw-bolder">未完成</h3>
+                            <h3 class="text-danger fw-bolder" id="done">未完成</h3>
                             {% endif %}
                         </div>
                     </div>
@@ -173,8 +173,12 @@
         <div class="col-12 col-md-8 col-xl-6 text-center text-lg-start">
             <ul class="list-inline list-group-flush list-group-borderless text-md-end mb-0">
                 <li class="list-inline-item px-0 px-xm-2">
-                    <a>总计：</a>
+                    <a>总销售额：</a>
                     <a class="text-info mb-0 display-4" id="all">test</a>
+                </li>
+                <li class="list-inline-item px-0 px-xm-2">
+                    <a>总激励额：</a>
+                    <a class="text-info mb-0 display-4" id="all_exci">test</a>
                 </li>
             </ul>
 
@@ -189,14 +193,25 @@
 <script src="{{ config.ASSETS_ROOT }}/js/jquery.min.js"></script>
 <script type="text/javascript">
     $(document).ready(function() {
-        var totalRow = 0
+        var totalRow = 0;
+        var totalRowExci = 0;
         $('#all_record tr').each(function() {
             $(this).find('td:eq(9)').each(function(){
                     totalRow += parseFloat($(this).text());
             });
+            $(this).find('td:eq(10)').each(function(){
+                    totalRowExci += parseFloat($(this).text());
+            });
         });
         var all = document.getElementById('all');
+        var all_exci = document.getElementById('all_exci');
+        var done = document.getElementById('done');
         all.text = totalRow;
+        if (done.innerText == '已完成'){
+        all_exci.text = totalRowExci;
+        }else{
+        all_exci.text = done.innerText;
+        }
     });
     function select_user_record() {
         var select = document.getElementById('admin_user_name');

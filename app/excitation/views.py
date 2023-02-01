@@ -24,7 +24,6 @@ class ExcitationView(MethodView):
             admin['select_index'] = int(request.args.get('index'))
         else:
             admin['select_index'] = int(session.get("_user_id"))
-        print(admin)
         global_settings = DataBaseUtils.get_global_settings()
         data = DataBaseUtils.query_all_record(record_user, start_time=global_settings['start_time'],
                                               end_time=global_settings['end_time'])
@@ -33,7 +32,8 @@ class ExcitationView(MethodView):
         for d in data:
             setting['number_limit'] += data[d]['all_number']
 
-        return render_template('excitation/all_record.html', segment='excitation_all', data=data, setting=setting,admin=admin)
+        return render_template('excitation/all_record.html', segment='excitation_all', data=data, setting=setting,
+                               admin=admin)
 
     @login_required
     def post(self):  # ToDo:计算percentage方法
@@ -62,7 +62,8 @@ class RecordView(MethodView):
                     states_code, message = 400, '参数不能为空!'
                 else:
                     time = DataBaseUtils.datepicker_2_datetime(data['time'])
-                    states_code, message = DataBaseUtils.add_record(name=data['name'], time=time, seller=session.get("username"))
+                    states_code, message = DataBaseUtils.add_record(name=data['name'], time=time,
+                                                                    seller=session.get("username"))
                 current_app.logger.info('User: %s -> add record : %s -> ret : %s,%s' % (
                     session.get("username"), data, states_code, message))
             elif data.get('method') == 'edit':
