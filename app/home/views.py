@@ -37,6 +37,7 @@ class LoginView(MethodView):
         try:
             test = current_app.ldap.bind_user(username, password)
         except flask_simpleldap.LDAPException as err:
+            current_app.logger.error(err)
             return render_template('home/login.html', form=LoginForm(request.form), msg=err)
         # 查询到用户
         if test is not None:
