@@ -1,5 +1,6 @@
 import datetime
 
+import flask_simpleldap
 from flask import render_template, request, redirect, url_for, Blueprint, current_app, session, jsonify
 from flask.views import MethodView
 from flask_login import login_user, login_required, logout_user
@@ -33,7 +34,10 @@ class LoginView(MethodView):
         if password is None:
             current_app.logger.error('login with out password!')
             return render_template('home/login.html', form=LoginForm(request.form), msg='请输入密码!')
-        test = current_app.ldap.bind_user(username, password)
+        try:
+            test = current_app.ldap.bind_user(username, password)
+        except flask_simpleldap.LDAPException as err:
+            return render_template('home/login.html', form=LoginForm(request.form), msg=err)
         # 查询到用户
         if test is not None:
             current_app.logger.info('user:%s is login! from addr:%s' % (username, request.remote_addr))
