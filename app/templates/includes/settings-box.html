@@ -27,7 +27,7 @@
                 <div class="row">
                     <div class="col-md-4 mb-2">
                         <div>
-                            <label for="percentage">激励百分数</label>
+                            <label for="percentage">激励百分数(%)</label>
                             <input class="form-control" id="percentage" name="percentage" type="text" value="{{data['percentage']}}">
                         </div>
                     </div>
@@ -65,17 +65,17 @@
                 alert('底价、售价和销售数量不能为空！');
                 return ;
             }
-            if ((floor_price.value <=0)||(price.value<=0')||(number.value <=0)){
+            if ((floor_price.value <=0)||(price.value<=0)||(number.value <=0)){
                 alert('底价、售价和销售数量不能小于或等于0！');
                 return ;
             }
-            if (floor_price.value>price.value){
+            if (floor_price.value>=price.value){
                 alert('底价应比售价低！');
                 return ;
             }
             if (((percentage.value == '')&&(reward.value==''))||((percentage.value != '')&&(reward.value !=''))){
                 alert('激励百分比和总激励奖金需要且只需要填写一处');
-                location.reload();
+                //location.reload();
                 return ;
             }
             var data = {};
