@@ -35,9 +35,6 @@ class ExcitationView(MethodView):
         return render_template('excitation/all_record.html', segment='excitation_all', data=data, setting=setting,
                                admin=admin)
 
-    @login_required
-    def post(self):  # ToDo:计算percentage方法
-        return str(DataBaseUtils.query_percentage(model_id=4, price=155, sale_time='2023-3-3'))
 
 
 class RecordView(MethodView):
@@ -142,7 +139,6 @@ class DetailView(MethodView):
                 current_app.logger.info('User: %s -> add detail : %s -> ret : %s,%s' % (
                     session.get("username"), data, states_code, message))
             elif data.get('method') == 'edit':
-                # ToDo:修改销售明细
                 if not data.get('id') or not data.get('price') or not data.get('number'):
                     states_code, message = 400, '参数不能为空!'
                 else:

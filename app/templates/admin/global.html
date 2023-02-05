@@ -6,37 +6,29 @@
 {% block stylesheets %}{% endblock stylesheets %}
 
 {% block content %}
-    <div class="py-4">
-      <nav aria-label="breadcrumb" class="d-none d-md-inline-block">
-          <ol class="breadcrumb breadcrumb-dark breadcrumb-transparent">
-              <li class="breadcrumb-item">
-                  <a href="{{url_for('home.home')}}">
-                      <svg class="icon icon-xxs" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
-                  </a>
-              </li>
-              <li class="breadcrumb-item"><a href="{{url_for('admin.model')}}">后台管理</a></li>
-              <li class="breadcrumb-item active" aria-current="page">全局参数</li>
-          </ol>
-      </nav>
-      <div class="d-flex justify-content-between w-100 flex-wrap">
-          <div class="mb-3 mb-lg-0">
-              <h1 class="h4">全局参数</h1>
-          </div>
-      </div>
-  </div>
+<div class="py-4">
+    <nav aria-label="breadcrumb" class="d-none d-md-inline-block">
+        <ol class="breadcrumb breadcrumb-dark breadcrumb-transparent">
+            <li class="breadcrumb-item">
+              <a href="{{url_for('home.home')}}">
+                  <svg class="icon icon-xxs" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+              </a>
+            </li>
+            <li class="breadcrumb-item"><a href="{{url_for('admin.model')}}">后台管理</a></li>
+            <li class="breadcrumb-item active" aria-current="page">全局参数</li>
+        </ol>
+    </nav>
+    <div class="d-flex justify-content-between w-100 flex-wrap">
+        <div class="mb-3 mb-lg-0">
+          <h1 class="h4">全局参数</h1>
+        </div>
+    </div>
+</div>
     <div class="row">
         <div class="col-12 col-xl-8">
             <div class="card card-body border-0 shadow mb-4">
 <!--                <h2 class="h5 mb-4">全局参数</h2>-->
                 <form method="post">
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <div>
-                                <label for="start_number">激励触发数量</label>
-                                <input class="form-control" id="start_number" name="start_number" type="text" value="{{data['start_number']}}" required>
-                            </div>
-                        </div>
-                    </div>
                     <div class="row align-items-center">
                         <div class="col-md-6 mb-3">
                             <label for="start_time">激励计算起始时间</label>
@@ -64,6 +56,60 @@
             </div>
         </div>
     </div>
+<div class="row">
+    <div class="col-12 col-xl-8">
+        <div class="card card-body border-0 shadow mb-4">
+            <h2>数量激励系数</h2>
+            <form method="post">
+                    <div class="row align-items-center">
+                        <div class="col-md-2">
+                            <h4>激励数量-></h4>
+                        </div>
+                        <div class="col-md-3 mb-2">
+                            <input class="form-control" id="add_number" name="add_number" type="text" value="" required>
+                        </div>
+                        <div class="col-md-2">
+                            <h4>激励系数-></h4>
+                        </div>
+                        <div class="col-md-3 mb-2">
+                            <input class="form-control" id="add_ratio" name="add_ratio" type="text" value="" required>
+                        </div>
+                        <div class="col-md-2 mb-2">
+                            <button class="btn btn-gray-800 mt-2 animate-up-2" type="button" onclick="f_add_number()">添加数量激励</button>
+                        </div>
+                    </div>
+                </form>
+            <div class="table-responsive">
+              <table class="table table-centered table-nowrap mb-0 rounded">
+                  <thead class="thead-light">
+                      <tr>
+                          <th class="border-0 rounded-start">ID</th>
+                          <th class="border-0">数量</th>
+                          <th class="border-0">系数</th>
+                          <th class="border-0 rounded-end">操作</th>
+                      </tr>
+                  </thead>
+                  <tbody>
+                  {% for number in data.number %}
+                      <!-- Item -->
+                      <tr>
+                          <td><a href="#" class="text-primary fw-bold">{{number.id}}</a> </td>
+                          <td class="fw-bold d-flex align-items-center">{{number.number}}</td>
+                          <td>{{number.ratio}}</td>
+                          <td>
+                              <a href="#" class="text-primary d-inline-flex align-items-center " onclick="delete_number({{number.id}})">
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#FF0000" class="bi bi-trash3" viewBox="0 0 16 16"><path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5ZM11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H2.506a.58.58 0 0 0-.01 0H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1h-.995a.59.59 0 0 0-.01 0H11Zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5h9.916Zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47ZM8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5Z"/></svg>
+                              </a>
+                          </td>
+                      </tr>
+                      <!-- End of Item -->
+                  {% endfor %}
+                  </tbody>
+              </table>
+          </div>
+        </div>
+    </div>
+</div>
 
 {% endblock content %}
 
@@ -72,11 +118,9 @@
 <script src="{{ config.ASSETS_ROOT }}/js/jquery.min.js"></script>
 <script type="text/javascript">
     function submit_global() {
-        var start_number = document.getElementById('start_number').value;
         var start_time = document.getElementById('start_time').value;
         var end_time = document.getElementById('end_time').value;
                 var data = {};
-                data['start_number'] = start_number;
                 data['start_time'] = start_time;
                 data['end_time'] = end_time;
                 $.ajax({
@@ -93,6 +137,47 @@
                         }
                     }
                 });
+    }
+    function f_add_number() {
+        var number = document.getElementById('add_number').value;
+        var ratio = document.getElementById('add_ratio').value;
+                var data = {};
+                data['method'] = 'add';
+                data['number'] = number;
+                data['ratio'] = ratio;
+                $.ajax({
+                    url: '{{ url_for('admin.number') }}',
+                    type: 'POST',
+                    data: JSON.stringify(data),
+                    contentType: 'application/json; charset=UTF-8',
+                    processData: false,
+                    success: function (result) {
+                        if (result['code'] == 200) {
+                            location.reload();
+                        } else {
+                            alert(result['message']);
+                        }
+                    }
+                });
+    }
+    function delete_number(id) {
+        var data = {};
+        data['method'] = 'delete';
+        data['id'] = id;
+        $.ajax({
+            url: '{{ url_for('admin.number') }}',
+            type: 'POST',
+            data: JSON.stringify(data),
+            contentType: 'application/json; charset=UTF-8',
+            processData: false,
+            success: function (result) {
+                if (result['code'] == 200) {
+                    location.reload();
+                } else {
+                    alert(result['message']);
+                }
+            }
+        });
     }
 </script>
 {% endblock javascripts %}

@@ -54,7 +54,7 @@ class Model(db.Model):  # 型号表
         else:
             return 0
 
-    def query_floor_price(self,sale_time):
+    def query_floor_price(self, sale_time):
         if type(sale_time) is str:
             time = DataBaseUtils.datepicker_2_datetime(sale_time)
         else:
@@ -65,6 +65,7 @@ class Model(db.Model):  # 型号表
             return data.query_floor_price()
         else:
             return 0
+
 
 class Way(db.Model):  # 激励策略表
     __tablename__ = 'Way'
@@ -90,6 +91,7 @@ class Way(db.Model):  # 激励策略表
         else:
             floor_price = 0
         return floor_price
+
 
 class Node(db.Model):  # 激励节点表
     __tablename__ = 'Node'
@@ -138,12 +140,79 @@ class Global(db.Model):  # 全局配置表
 @event.listens_for(Global.__table__, 'after_create')
 def init_global(*args, **kwargs):
     settings = {"start_time": "2010-1-1",
-                "end_time": "2050-1-1",
-                "start_number": "3000"}
+                "end_time": "2050-1-1"}
     for s in settings:
         new_setting = Global(key=s, value=settings[s])
         db.session.add(new_setting)
     db.session.commit()
+
+
+class Number(db.Model):  # 数量激励表
+    __tablename__ = 'Number'
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    number = db.Column(db.Integer, unique=True, nullable=False)
+    ratio = db.Column(db.Float, nullable=False)
+
+    @staticmethod
+    def query_all():
+        data = Number.query.all()
+        return data
+
+    @staticmethod
+    def add(number, ratio):
+        try:
+            if Number.query.filter_by(number=number).first():
+                return 400, '数量激励节点已存在!'
+            down = Number.query.filter(Number.number.__lt__(number)).order_by(-Number.number).first()
+            _down = down.ratio if down else 0
+            up = Number.query.filter(Number.number.__gt__(number)).order_by(Number.number).first()
+            _up = up.ratio if up else float(1)
+            if _up == 1:
+                if float(ratio) <= _down or float(ratio) > _up:
+                    return 400, '数量激励节点 %s 的激励系数应该在[%s-%s]区间内！' % (number, _down, _up)
+            else:
+                if float(ratio) <= _down or float(ratio) >= _up:
+                    return 400, '数量激励节点 %s 的激励系数应该在[%s-%s]区间内！' % (number, _down, _up)
+            new = Number(number=number, ratio=ratio)
+            db.session.add(new)
+            db.session.commit()
+            return 200, 'OK'
+        except Exception as e:
+            return 400, e
+
+    @staticmethod
+    def delete(number_id):
+        try:
+            delete = Number.query.filter_by(id=number_id).first()
+            if delete:
+                db.session.delete(delete)
+                db.session.commit()
+                return 200, 'OK'
+            else:
+                return 404, 'Not found'
+        except Exception as e:
+            return 400, e
+
+    @staticmethod
+    def edit(number_id,number,ratio):
+        try:
+            if Number.query.filter_by(number=number).first():
+                return 400, '数量激励节点 %s 已存在!'%number
+            down = Number.query.filter(Number.number.__lt__(number)).order_by(-Number.number).first()
+            _down = down.ratio if down else 0
+            up = Number.query.filter(Number.number.__gt__(number)).order_by(Number.number).first()
+            _up = up.ratio if up else float(1)
+            if float(ratio) <= _down or float(ratio) >= _up:
+                return 400, '数量激励节点 %s 的激励系数应该在[%s-%s]区间内！' % (ratio, _down, _up)
+
+            edit = Number.query.filter_by(id=number_id).first()
+            edit.number = number
+            edit.ratio = ratio
+            db.session.commit()
+            return 200, 'OK'
+        except Exception as e:
+            return 400, e
 
 
 class DataBaseUtils:
@@ -158,7 +227,6 @@ class DataBaseUtils:
     def query_all_user():
         data = User.query.all()
         return data
-
 
     @staticmethod
     def session_add_all(user):
@@ -176,7 +244,7 @@ class DataBaseUtils:
             return 400, '型号已存在!'
 
     @staticmethod
-    def delete_model(model_id):  # Todo: 删除型号下所有的激励策略及节点
+    def delete_model(model_id):
         try:
             delete = Model.query.filter_by(id=model_id).first()
             if delete:
@@ -487,13 +555,17 @@ class DataBaseUtils:
                                     "sale_price": [d.Detail.sale_price],
                                     "sale_number": [d.Detail.sale_number],
                                     "sum": [d.Detail.sale_price * d.Detail.sale_number],
-                                    "excitation": [DataBaseUtils.query_percentage(model_id=d.Model.id, price=d.Detail.sale_price, sale_time=d.Record.sale_time)*d.Detail.sale_number]}
+                                    "excitation": [
+                                        DataBaseUtils.query_percentage(model_id=d.Model.id, price=d.Detail.sale_price,
+                                                                       sale_time=d.Record.sale_time) * d.Detail.sale_number]}
             else:
                 ret[d.Record.id]["model"].append(d.Model.name)
                 ret[d.Record.id]["sale_price"].append(d.Detail.sale_price)
                 ret[d.Record.id]["sale_number"].append(d.Detail.sale_number)
                 ret[d.Record.id]["sum"].append(d.Detail.sale_price * d.Detail.sale_number)
-                ret[d.Record.id]["excitation"].append(DataBaseUtils.query_percentage(model_id=d.Model.id, price=d.Detail.sale_price, sale_time=d.Record.sale_time)* d.Detail.sale_number)
+                ret[d.Record.id]["excitation"].append(
+                    DataBaseUtils.query_percentage(model_id=d.Model.id, price=d.Detail.sale_price,
+                                                   sale_time=d.Record.sale_time) * d.Detail.sale_number)
         for r in ret:
             ret[r]['all'] = sum(ret[r]['sum'])
             ret[r]['all_excitation'] = sum(ret[r]['excitation'])
@@ -514,4 +586,4 @@ class DataBaseUtils:
             price_diff = 0
         else:
             price_diff = price - price_floor
-        return price_diff * percentage /100
+        return price_diff * percentage / 100
