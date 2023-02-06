@@ -604,7 +604,6 @@ class DataBaseUtils:
             price_diff = price - price_floor
         if price_diff < 0:
             price_diff = 0
-        print(round(price_diff * percentage / 100, 1))
         return round(price_diff * percentage / 100, 1)
 
     @staticmethod

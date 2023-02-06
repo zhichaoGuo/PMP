@@ -32,7 +32,7 @@ class ExcitationView(MethodView):
         for d in data:
             setting['number_limit'] += data[d]['all_number']
         setting["ratio"] = Number.query_ratio(setting['number_limit'])
-        print(data)
+        # print(data)
         return render_template('excitation/all_record.html', segment='excitation_all', data=data, setting=setting,
                                admin=admin)
 
