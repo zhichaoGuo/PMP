@@ -160,6 +160,15 @@ class Number(db.Model):  # 数量激励表
         return data
 
     @staticmethod
+    def query_ratio(number):
+        query = Number.query.filter(Number.number.__le__(number)).order_by(-Number.number).first()
+        if query:
+            ret = query.ratio
+        else:
+            ret = 0
+        return ret
+
+    @staticmethod
     def add(number, ratio):
         try:
             if Number.query.filter_by(number=number).first():
@@ -213,6 +222,13 @@ class Number(db.Model):  # 数量激励表
             return 200, 'OK'
         except Exception as e:
             return 400, e
+
+
+@event.listens_for(Number.__table__, 'after_create')
+def init_global(*args, **kwargs):
+    init_number = Number(number=3000, ratio=0.2)
+    db.session.add(init_number)
+    db.session.commit()
 
 
 class DataBaseUtils:
@@ -530,7 +546,7 @@ class DataBaseUtils:
         return datetime.date(year=int(time[0]), month=int(time[1]), day=int(time[2]))
 
     @staticmethod
-    def query_all_record(seller, start_time='2000-1-1', end_time=''):
+    def query_all_record(seller, start_time='2000-1-1', end_time=''):  # 此处返回的激励数值未乘以数量激励系数，数量激励系数在前端计算
         start_time_format = DataBaseUtils.datepicker_2_datetime(start_time)
         if not end_time:
             end_time_format = datetime.date.today()
@@ -556,16 +572,16 @@ class DataBaseUtils:
                                     "sale_number": [d.Detail.sale_number],
                                     "sum": [d.Detail.sale_price * d.Detail.sale_number],
                                     "excitation": [
-                                        DataBaseUtils.query_percentage(model_id=d.Model.id, price=d.Detail.sale_price,
-                                                                       sale_time=d.Record.sale_time) * d.Detail.sale_number]}
+                                        round(DataBaseUtils.query_percentage(model_id=d.Model.id, price=d.Detail.sale_price,
+                                                                       sale_time=d.Record.sale_time) * d.Detail.sale_number,1)]}
             else:
                 ret[d.Record.id]["model"].append(d.Model.name)
                 ret[d.Record.id]["sale_price"].append(d.Detail.sale_price)
                 ret[d.Record.id]["sale_number"].append(d.Detail.sale_number)
                 ret[d.Record.id]["sum"].append(d.Detail.sale_price * d.Detail.sale_number)
                 ret[d.Record.id]["excitation"].append(
-                    DataBaseUtils.query_percentage(model_id=d.Model.id, price=d.Detail.sale_price,
-                                                   sale_time=d.Record.sale_time) * d.Detail.sale_number)
+                    round(DataBaseUtils.query_percentage(model_id=d.Model.id, price=d.Detail.sale_price,
+                                                   sale_time=d.Record.sale_time) * d.Detail.sale_number,1))
         for r in ret:
             ret[r]['all'] = sum(ret[r]['sum'])
             ret[r]['all_excitation'] = sum(ret[r]['excitation'])
@@ -586,4 +602,15 @@ class DataBaseUtils:
             price_diff = 0
         else:
             price_diff = price - price_floor
-        return price_diff * percentage / 100
+        if price_diff < 0:
+            price_diff = 0
+        print(round(price_diff * percentage / 100, 1))
+        return round(price_diff * percentage / 100, 1)
+
+    @staticmethod
+    def query_number(number=None):
+        if number:
+            num = Number.query.filter(Number.number.__le__(number)).order_by(-Number.number).first().number
+        else:
+            num = Number.query.order_by(Number.number).first().number
+        return num

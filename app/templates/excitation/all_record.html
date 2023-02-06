@@ -111,7 +111,7 @@
                         <th class="border-0">型号</th>
                         <th class="border-0">单价</th>
                         <th class="border-0">数量</th>
-                        <th class="border-0">价格</th>
+                        <th class="border-0">价格小计</th>
                         <th class="border-0">激励</th>
                         <th class="border-0">总价</th>
                         <th class="border-0 rounded-end">总激励</th>
@@ -146,15 +146,17 @@
                           {% endfor %}
                       </td>
                       <td>
+                        <!--        乘以数量激励系数         -->
                           {% for d in data[r]['excitation'] %}
-                          {{d}}<br>
+                          {{d*setting['ratio']}}<br>
                           {% endfor %}
                       </td>
                       <td>
                           {{data[r]['all']}}
                       </td>
                       <td>
-                          {{data[r]['all_excitation']}}
+                        <!--        乘以数量激励系数         -->
+                          {{data[r]['all_excitation']*setting['ratio']}}
                       </td>
 
                     </tr>

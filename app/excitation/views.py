@@ -2,7 +2,7 @@ from flask import render_template, request, redirect, url_for, Blueprint, jsonif
 from flask.views import MethodView
 from flask_login import login_required
 
-from app.models import DataBaseUtils
+from app.models import DataBaseUtils, Number
 
 excitation = Blueprint('excitation', __name__)
 
@@ -28,10 +28,11 @@ class ExcitationView(MethodView):
         data = DataBaseUtils.query_all_record(record_user, start_time=global_settings['start_time'],
                                               end_time=global_settings['end_time'])
         setting = {"settings": global_settings, "number_limit": 0}
-        setting["settings"]["start_number"] = int(setting["settings"]["start_number"])
+        setting["settings"]["start_number"] = DataBaseUtils.query_number()
         for d in data:
             setting['number_limit'] += data[d]['all_number']
-
+        setting["ratio"] = Number.query_ratio(setting['number_limit'])
+        print(data)
         return render_template('excitation/all_record.html', segment='excitation_all', data=data, setting=setting,
                                admin=admin)
 

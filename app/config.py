@@ -17,7 +17,7 @@ class Config(object):
     LDAP_USERNAME = "cn=ldapadmin,ou=htek,dc=htek,dc=org"
     LDAP_PASSWORD = "LDap123"
     # ADMIN_GROUP
-    ADMIN_GROUP = ['yaki.guo', 'leon.zhang']
+    ADMIN_GROUP = ['navy.ding','yaki.guo']
 
 
 class ProductionConfig(Config):
