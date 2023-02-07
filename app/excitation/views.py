@@ -15,19 +15,20 @@ class ExcitationView(MethodView):
     @login_required
     def get(self):
         current_app.logger.info('User: %s -> ExcitationView' % session.get("username"))
-        admin = {"all_user": DataBaseUtils.query_all_user(), "select_index": 0}
-        if request.args.get('admin_user_name'):
+        admin = {"all_user": DataBaseUtils.query_all_user(), "select_index": 0}  # admin select 需要的数据
+        if request.args.get('admin_user_name'):  # admin用户可以查询其他用户
             record_user = request.args.get('admin_user_name')
-        else:
+        else:  # 如果没有传入用户名则查询本人
             record_user = session.get("username")
         if request.args.get('index'):
             admin['select_index'] = int(request.args.get('index'))
         else:
             admin['select_index'] = int(session.get("_user_id"))
         global_settings = DataBaseUtils.get_global_settings()
+        # 列表需要的数据
         data = DataBaseUtils.query_all_record(record_user, start_time=global_settings['start_time'],
                                               end_time=global_settings['end_time'])
-        setting = {"settings": global_settings, "number_limit": 0}
+        setting = {"settings": global_settings, "number_limit": 0}  # user card 需要的数据
         setting["settings"]["start_number"] = DataBaseUtils.query_number()
         for d in data:
             setting['number_limit'] += data[d]['all_number']

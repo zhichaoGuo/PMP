@@ -57,9 +57,12 @@ class NumberView(MethodView):
             if not data.get('id'):
                 states_code, message = 400, '编辑的number id不能为空!'
             else:
-                states_code, message = Number.edit(number_id=data['id'], number=data['number'], ratio=data['ratio'])
-                current_app.logger.info('User: %s -> edit number : %s -> ret : %s,%s' % (
-                    session.get("username"), data, states_code, message))
+                if not data.get('number') or not data.get('ratio'):
+                    states_code, message = 400, '参数不能为空!'
+                else:
+                    states_code, message = Number.edit(number_id=data['id'], number=data['number'], ratio=data['ratio'])
+                    current_app.logger.info('User: %s -> edit number : %s -> ret : %s,%s' % (
+                        session.get("username"), data, states_code, message))
         else:
             states_code, message = 400, 'method 字段无法识别.'
             current_app.logger.warn('User: %s -> post number :%s -> ret:%s' % (session.get("username"), data, message))
@@ -290,16 +293,21 @@ class CalculatorView(MethodView):
         if not data.get('floor_price') or not data.get('price') or not data.get('number'):
             states_code, message = 400, '底价、售价和销售数量不能为空'
         else:
-            if not data.get('percentage') and data.get('reward'):
-                data['percentage'] = float(data.get('reward')) / (
-                        float(data.get('price')) - float(data.get('floor_price'))) / int(data.get('number')) * 100
-                states_code, message = 200, '计算激励百分比'
-            elif data.get('percentage') and not data.get('reward'):
-                data['reward'] = (float(data.get('price')) - float(data.get('floor_price'))) * float(
-                    data.get('percentage') / 100) * int(data.get('number'))
-                states_code, message = 200, '计算总激励奖金'
+            ratio = float(Number.query_ratio(data['number']))
+            if ratio == 0:
+                states_code, message = 400, '数量 %s 的数量激励系数为0!' % data['number']
             else:
-                states_code, message = 400, '激励百分比和总激励奖金需要且只需要填写一处'
+                if not data.get('percentage') and data.get('reward'):
+                    data['percentage'] = float(data.get('reward')) / (
+                            float(data.get('price')) - float(data.get('floor_price'))) / int(
+                        data.get('number')) / ratio * 100
+                    states_code, message = 200, '计算激励百分比'
+                elif data.get('percentage') and not data.get('reward'):
+                    data['reward'] = (float(data.get('price')) - float(data.get('floor_price'))) * float(
+                        data.get('percentage'))/ 100 * int(data.get('number'))
+                    states_code, message = 200, '计算总激励奖金'
+                else:
+                    states_code, message = 400, '激励百分比和总激励奖金需要且只需要填写一处'
 
         return jsonify({
             "code": states_code,

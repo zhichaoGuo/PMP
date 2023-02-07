@@ -29,4 +29,4 @@ if DEBUG:
     app.logger.info('ASSETS_ROOT      = ' + app_config.ASSETS_ROOT)
 
 if __name__ == "__main__":
-    app.run(host='10.3.5.44',port=5001)
+    app.run(host='10.3.3.49',port=5001)

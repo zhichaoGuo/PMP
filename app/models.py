@@ -66,6 +66,24 @@ class Model(db.Model):  # 型号表
         else:
             return 0
 
+    def query_lower_all_nodes(self, price, sale_time):
+        """
+        查询此型号下sale time对应的策略way中价格低于price的所有节点，返回价格由大到小排列的node的列表
+        :param price: float
+        :param sale_time: str or datatime
+        :return: list
+        """
+        if type(sale_time) is str:
+            time = DataBaseUtils.datepicker_2_datetime(sale_time)
+        else:
+            time = sale_time
+        cur_way = Way.query.filter_by(model_id=self.id).filter(Way.start_time.__le__(time)) \
+            .order_by(Way.start_time.desc()).first()
+        if cur_way:
+            return cur_way.query_lower_all_nodes(price)
+        else:
+            return []
+
 
 class Way(db.Model):  # 激励策略表
     __tablename__ = 'Way'
@@ -91,6 +109,15 @@ class Way(db.Model):  # 激励策略表
         else:
             floor_price = 0
         return floor_price
+
+    def query_lower_all_nodes(self, price):
+        """
+        查询本条策略中价格低于price的所有节点，返回价格由大到小排列的node的列表
+        :param price:float
+        :return: list
+        """
+        data = Node.query.filter_by(way_id=self.id).filter(Node.price.__lt__(price)).order_by(-Node.price).all()
+        return data
 
 
 class Node(db.Model):  # 激励节点表
@@ -204,16 +231,24 @@ class Number(db.Model):  # 数量激励表
             return 400, e
 
     @staticmethod
-    def edit(number_id,number,ratio):
+    def edit(number_id, number, ratio):
         try:
-            if Number.query.filter_by(number=number).first():
-                return 400, '数量激励节点 %s 已存在!'%number
+            check = Number.query.filter_by(number=number).first()
+            if check:
+                if check.id != int(number_id):
+                    print(type(check.id))
+                    print(type(number_id))
+                    return 400, '数量激励节点 %s 已存在!' % number
             down = Number.query.filter(Number.number.__lt__(number)).order_by(-Number.number).first()
             _down = down.ratio if down else 0
             up = Number.query.filter(Number.number.__gt__(number)).order_by(Number.number).first()
             _up = up.ratio if up else float(1)
-            if float(ratio) <= _down or float(ratio) >= _up:
-                return 400, '数量激励节点 %s 的激励系数应该在[%s-%s]区间内！' % (ratio, _down, _up)
+            if _up == 1:
+                if float(ratio) <= _down or float(ratio) > _up:
+                    return 400, '数量激励节点 %s 的激励系数应该在[%s-%s]区间内！' % (ratio, _down, _up)
+            else:
+                if float(ratio) <= _down or float(ratio) >= _up:
+                    return 400, '数量激励节点 %s 的激励系数应该在[%s-%s]区间内！' % (ratio, _down, _up)
 
             edit = Number.query.filter_by(id=number_id).first()
             edit.number = number
@@ -562,7 +597,9 @@ class DataBaseUtils:
         ret = {}
         rec = []
         for d in data:
-            if d.Record.id not in rec:
+            excitation = round(DataBaseUtils.query_excitation(model_id=d.Model.id, price=d.Detail.sale_price,
+                                                              sale_time=d.Record.sale_time) * d.Detail.sale_number, 1)
+            if d.Record.id not in rec:  # 此条明细属于新的记录
                 rec.append(d.Record.id)
                 ret[d.Record.id] = {"sale_time": d.Record.sale_time,
                                     "name": d.Record.name,
@@ -571,17 +608,13 @@ class DataBaseUtils:
                                     "sale_price": [d.Detail.sale_price],
                                     "sale_number": [d.Detail.sale_number],
                                     "sum": [d.Detail.sale_price * d.Detail.sale_number],
-                                    "excitation": [
-                                        round(DataBaseUtils.query_percentage(model_id=d.Model.id, price=d.Detail.sale_price,
-                                                                       sale_time=d.Record.sale_time) * d.Detail.sale_number,1)]}
-            else:
+                                    "excitation": [excitation]}
+            else:  # 此条明细已存在记录
                 ret[d.Record.id]["model"].append(d.Model.name)
                 ret[d.Record.id]["sale_price"].append(d.Detail.sale_price)
                 ret[d.Record.id]["sale_number"].append(d.Detail.sale_number)
                 ret[d.Record.id]["sum"].append(d.Detail.sale_price * d.Detail.sale_number)
-                ret[d.Record.id]["excitation"].append(
-                    round(DataBaseUtils.query_percentage(model_id=d.Model.id, price=d.Detail.sale_price,
-                                                   sale_time=d.Record.sale_time) * d.Detail.sale_number,1))
+                ret[d.Record.id]["excitation"].append(excitation)
         for r in ret:
             ret[r]['all'] = sum(ret[r]['sum'])
             ret[r]['all_excitation'] = sum(ret[r]['excitation'])
@@ -595,16 +628,26 @@ class DataBaseUtils:
             Record.sale_time).all()
 
     @staticmethod
-    def query_percentage(model_id, price, sale_time):
-        percentage = Model(id=model_id).query_percentage(price=price, sale_time=sale_time)
-        price_floor = Model(id=model_id).query_floor_price(sale_time=sale_time)
-        if price_floor == 0:
-            price_diff = 0
-        else:
-            price_diff = price - price_floor
-        if price_diff < 0:
-            price_diff = 0
-        return round(price_diff * percentage / 100, 1)
+    def query_excitation(model_id, price, sale_time):
+        """
+        计算特定型号下sale time时执行的策略中价格为price时的激励奖金（此为百分比，未乘数量）
+        :param model_id:
+        :param price:
+        :param sale_time:
+        :return:
+        """
+        all_lower_node = Model(id=model_id).query_lower_all_nodes(price=price, sale_time=sale_time)
+        lower_price = 0
+        higher_price = price
+        pre_exci = 0
+        if all_lower_node is []:
+            return 0
+        for node in all_lower_node:
+            lower_price = node.price
+            pre_exci += (higher_price - lower_price) * node.percentage
+            print('[%s-%s]%s=>%s' % (lower_price, higher_price, price, pre_exci))
+            higher_price = node.price
+        return round(pre_exci / 100, 1)
 
     @staticmethod
     def query_number(number=None):
