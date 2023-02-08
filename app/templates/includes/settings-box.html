@@ -7,8 +7,30 @@
                 <div class="row">
                     <div class="col-md-4 mb-2">
                         <div>
-                            <label for="floor_price">底价</label>
-                            <input class="form-control" id="floor_price" name="floor_price" type="text" value="{{data['floor_price']}}" required>
+                            <label for="calculator_models">型号</label>
+                            <select class="form-select mb-0" id="calculator_models" aria-label="Gender select example" onchange="select_calculator_models()">
+                                {% for m in data.models %}
+                                    {% if m.id == data.select_index %}
+                                        <option value="{{m.id}}" selected>{{m.name}}</option>
+                                    {% else %}
+                                        <option value="{{m.id}}">{{m.name}}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-2">
+                        <div>
+                            <label for="calculator_excitations">策略</label>
+                            <select class="form-select mb-0" id="calculator_excitations" aria-label="Gender select example" onchange="select_calculator_excitations()">
+                                {% for e in data.exci %}
+                                    {% if e.id == data.select_index2 %}
+                                        <option value="{{e.id}}" selected>{{e.name}}</option>
+                                    {% else %}
+                                        <option value="{{e.id}}">{{e.name}}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
                         </div>
                     </div>
                     <div class="col-md-4 mb-2">
@@ -17,18 +39,16 @@
                             <input class="form-control" id="price" name="price" type="text" value="{{data['price']}}" required>
                         </div>
                     </div>
+                </div>
+                <div class="row">
                     <div class="col-md-4 mb-2">
                         <div>
                             <label for="number">销售数量</label>
                             <input class="form-control" id="number" name="number" type="text" value="{{data['number']}}" required>
                         </div>
                     </div>
-                </div>
-                <div class="row">
                     <div class="col-md-4 mb-2">
                         <div>
-                            <label for="percentage">激励百分数(%)</label>
-                            <input class="form-control" id="percentage" name="percentage" type="text" value="{{data['percentage']}}">
                         </div>
                     </div>
                     <div class="col-md-4 mb-2">
@@ -40,7 +60,7 @@
                 </div>
                 <br>
                 <button class="btn btn-secondary d-inline-flex align-items-center justify-content-center mb-3 w-100" onclick="do_calculator()">
-                    计 算
+                    计算总激励奖金
                     <svg class="icon icon-xs ms-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M2 9.5A3.5 3.5 0 005.5 13H9v2.586l-1.293-1.293a1 1 0 00-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 15.586V13h2.5a4.5 4.5 0 10-.616-8.958 4.002 4.002 0 10-7.753 1.977A3.5 3.5 0 002 9.5zm9 3.5H9V8a1 1 0 012 0v5z" clip-rule="evenodd"></path></svg>
                 </button>
         </div>
@@ -56,33 +76,31 @@
     </div>
     <script>
         function do_calculator() {
-            var floor_price = document.getElementById('floor_price');
+            var calculator_models = document.getElementById('calculator_models');
+            var model_id = calculator_models.options[calculator_models.selectedIndex].value;
+            var calculator_excitations = document.getElementById('calculator_excitations');
+            var excitation_id = calculator_excitations.options[calculator_excitations.selectedIndex].value;
             var price = document.getElementById('price');
             var number = document.getElementById('number');
-            var percentage = document.getElementById('percentage');
             var reward = document.getElementById('reward');
-            if ((floor_price.value == '')||(price.value=='')||(number.value == '')){
-                alert('底价、售价和销售数量不能为空！');
+            if ((price.value=='')||(number.value == '')){
+                alert('售价和销售数量不能为空！');
                 return ;
             }
-            if ((floor_price.value <=0)||(price.value<=0)||(number.value <=0)){
-                alert('底价、售价和销售数量不能小于或等于0！');
+            if ((price.value<=0)||(number.value <=0)){
+                alert('售价和销售数量不能小于或等于0！');
                 return ;
             }
-            if (floor_price.value>=price.value){
-                alert('底价应比售价低！');
-                return ;
-            }
-            if (((percentage.value == '')&&(reward.value==''))||((percentage.value != '')&&(reward.value !=''))){
-                alert('激励百分比和总激励奖金需要且只需要填写一处');
+            if (reward.value !=''){
+                alert('不需要填写总激励奖金');
                 //location.reload();
                 return ;
             }
             var data = {};
-            data['floor_price'] = floor_price.value;
+            data['model_id'] = model_id;
+            data['excitation_id'] = excitation_id;
             data['price'] = price.value;
             data['number'] = number.value;
-            data['percentage'] = percentage.value;
             data['reward'] = reward.value;
             $.ajax({
                 url: '{{ url_for('admin.calculator') }}',
@@ -92,10 +110,8 @@
                 processData: false,
                 success: function (result) {
                     if (result['code'] == 200) {
-                            floor_price.value = result['data']['floor_price'];
                             price.value = result['data']['price'];
                             number.value = result['data']['number'];
-                            percentage.value = result['data']['percentage'];
                             reward.value = result['data']['reward'];
                     } else {
                         alert(result['message']);
@@ -104,4 +120,16 @@
                 }
             });
         }
+    function select_calculator_models() {
+    var select = document.getElementById('calculator_models');
+    var mod = select.options[select.selectedIndex].value;
+    location.replace("?model=" + mod );
+    }
+    function select_calculator_excitations() {
+        var select = document.getElementById('calculator_models');
+        var select2 = document.getElementById('calculator_excitations');
+        var mod = select.options[select.selectedIndex].value;
+        var nod = select2.options[select2.selectedIndex].value;
+        location.replace("?model=" + mod +"&exci=" + nod);
+    }
     </script>

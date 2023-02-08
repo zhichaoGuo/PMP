@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, request, make_response, redirect, 
 from flask.views import MethodView
 from flask_login import login_required
 
-from app.models import DataBaseUtils, Model, Number
+from app.models import DataBaseUtils, Model, Number, Way
 
 admin = Blueprint('admin', __name__)
 
@@ -290,24 +290,21 @@ class CalculatorView(MethodView):
     @login_required
     def post(self):
         data = request.get_json()
-        if not data.get('floor_price') or not data.get('price') or not data.get('number'):
-            states_code, message = 400, '底价、售价和销售数量不能为空'
+        if not data.get('model_id') or not data.get('excitation_id') or not data.get('price') or not data.get('number'):
+            states_code, message = 400, '型号、策略、售价和销售数量不能为空'
         else:
             ratio = float(Number.query_ratio(data['number']))
             if ratio == 0:
                 states_code, message = 400, '数量 %s 的数量激励系数为0!' % data['number']
             else:
-                if not data.get('percentage') and data.get('reward'):
-                    data['percentage'] = float(data.get('reward')) / (
-                            float(data.get('price')) - float(data.get('floor_price'))) / int(
-                        data.get('number')) / ratio * 100
-                    states_code, message = 200, '计算激励百分比'
-                elif data.get('percentage') and not data.get('reward'):
-                    data['reward'] = (float(data.get('price')) - float(data.get('floor_price'))) * float(
-                        data.get('percentage'))/ 100 * int(data.get('number'))
+                if not data.get('reward'):  # 计算总激励奖金
+                    excitation_time = Way.query.filter_by(id=data['excitation_id']).first().start_time
+                    print(type(excitation_time))
+                    data['reward'] = round(DataBaseUtils.query_excitation(model_id=data['model_id'], price=float(data['price']),
+                                                              sale_time=excitation_time) * float(data['number']) * ratio, 1)
                     states_code, message = 200, '计算总激励奖金'
                 else:
-                    states_code, message = 400, '激励百分比和总激励奖金需要且只需要填写一处'
+                    states_code, message = 400, '不需要填写总激励奖金'
 
         return jsonify({
             "code": states_code,

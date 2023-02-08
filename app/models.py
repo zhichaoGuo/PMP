@@ -644,10 +644,10 @@ class DataBaseUtils:
             return 0
         for node in all_lower_node:
             lower_price = node.price
-            pre_exci += (higher_price - lower_price) * node.percentage
+            pre_exci = pre_exci + (higher_price - lower_price) * node.percentage
             print('[%s-%s]%s=>%s' % (lower_price, higher_price, price, pre_exci))
             higher_price = node.price
-        return round(pre_exci / 100, 1)
+        return pre_exci / 100
 
     @staticmethod
     def query_number(number=None):
