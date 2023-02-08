@@ -183,7 +183,7 @@ class Number(db.Model):  # 数量激励表
 
     @staticmethod
     def query_all():
-        data = Number.query.all()
+        data = Number.query.order_by(Number.number).all()
         return data
 
     @staticmethod

@@ -2,6 +2,7 @@ from flask import Blueprint, render_template, request, make_response, redirect, 
 from flask.views import MethodView
 from flask_login import login_required
 
+from app.grid import make_grid_pic
 from app.models import DataBaseUtils, Model, Number, Way
 
 admin = Blueprint('admin', __name__)
@@ -300,12 +301,39 @@ class CalculatorView(MethodView):
                 if not data.get('reward'):  # 计算总激励奖金
                     excitation_time = Way.query.filter_by(id=data['excitation_id']).first().start_time
                     print(type(excitation_time))
-                    data['reward'] = round(DataBaseUtils.query_excitation(model_id=data['model_id'], price=float(data['price']),
-                                                              sale_time=excitation_time) * float(data['number']) * ratio, 1)
+                    data['reward'] = round(
+                        DataBaseUtils.query_excitation(model_id=data['model_id'], price=float(data['price']),
+                                                       sale_time=excitation_time) * float(data['number']) * ratio, 1)
                     states_code, message = 200, '计算总激励奖金'
                 else:
                     states_code, message = 400, '不需要填写总激励奖金'
 
+        return jsonify({
+            "code": states_code,
+            "message": message,
+            'data': data,
+        })
+
+
+class GridView(MethodView):
+    def get(self):
+        pass
+
+    def post(self):
+        data = request.get_json()
+        price =[0]
+        excitation = [0]
+        numbers = []
+        ratio = []
+        for i in DataBaseUtils.query_nodes(way_id=data['way_id']):
+            price.append(i['price'])
+            excitation.append(i['percentage'])
+        for i in Number.query_all():
+            numbers.append(i.number)
+            ratio.append(i.ratio)
+        states_code, message = 200, 'OK'
+        # print("price = %s\r\nexcitation = %s\r\nnumbers = %s\r\nratio = %s"%(price,excitation,numbers,ratio))
+        make_grid_pic(data['way_id'],price,excitation,numbers,ratio)
         return jsonify({
             "code": states_code,
             "message": message,
