@@ -656,3 +656,21 @@ class DataBaseUtils:
         else:
             num = Number.query.order_by(Number.number).first().number
         return num
+
+    @staticmethod
+    def query_record_pre_month(year=2023):
+        time_format = []
+        for i in range(12):
+            time_format.append(DataBaseUtils.datepicker_2_datetime('%s-%s-1' % (year, i + 1)))
+        time_format.append(DataBaseUtils.datepicker_2_datetime('%s-1-1' % (year + 1)))
+        all_data = []
+        for i in range(12):
+            all_data.append(db.session.query(Detail, Record, Model) \
+                            .join(Record, Detail.record_id == Record.id) \
+                            .join(Model, Detail.model_id == Model.id) \
+                            .filter(Record.sale_time.__ge__(time_format[i])) \
+                            .filter(Record.sale_time.__lt__(time_format[i + 1])) \
+                            .order_by(Record.sale_time.desc()).all())
+        return all_data
+
+

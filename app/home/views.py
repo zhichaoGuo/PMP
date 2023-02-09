@@ -97,6 +97,16 @@ class HomeView(MethodView):
     @login_required
     def get(self):
         current_app.logger.info('User: %s -> HomeView' % session.get("username"))
-        data = {"all": 150,
-                "line": [0, 10, 10, 10, 20, 25, 35, 50, 65, 80, 95, 100]}
+        all_data = DataBaseUtils.query_record_pre_month()
+        data = {"all": 0,
+                "line": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]}
+        i = 0
+        for m in all_data:
+            i = i + 1
+            if m:
+                for d in m:
+                    data['line'][i - 1] += d.Detail.sale_price * d.Detail.sale_number
+                    data['all'] += d.Detail.sale_price * d.Detail.sale_number
+            else:
+                data['line'][i - 1] = 0
         return render_template('home/dashboard.html', data=data)
