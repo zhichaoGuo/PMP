@@ -34,9 +34,13 @@ class ExcitationView(MethodView):
             setting['number_limit'] += data[d]['all_number']
         setting["ratio"] = Number.query_ratio(setting['number_limit'])
         # print(data)
+        for r in data:  # 单个型号激励乘以数量激励系数并取一位小数
+            for i in range(len(data[r]['excitation'])):
+                data[r]['excitation'][i] = round(data[r]['excitation'][i] * setting["ratio"], 1)
+            data[r]['all_excitation'] = round(sum(data[r]['excitation']), 1)
+
         return render_template('excitation/all_record.html', segment='excitation_all', data=data, setting=setting,
                                admin=admin)
-
 
 
 class RecordView(MethodView):

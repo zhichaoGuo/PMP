@@ -106,7 +106,7 @@
                     <tr>
                         <th class="border-0 rounded-start">销售记录ID</th>
                         <th class="border-0">销售时间</th>
-                        <th class="border-0">销售备注</th>
+                        <th class="border-0">销售订单号</th>
                         <th class="border-0">销售者</th>
                         <th class="border-0">型号</th>
                         <th class="border-0">单价</th>
@@ -148,7 +148,7 @@
                       <td>
                         <!--        乘以数量激励系数         -->
                           {% for d in data[r]['excitation'] %}
-                          {{d*setting['ratio']}}<br>
+                          {{d}}<br>
                           {% endfor %}
                       </td>
                       <td>
@@ -156,7 +156,7 @@
                       </td>
                       <td>
                         <!--        乘以数量激励系数         -->
-                          {{data[r]['all_excitation']*setting['ratio']}}
+                          {{data[r]['all_excitation']}}
                       </td>
 
                     </tr>

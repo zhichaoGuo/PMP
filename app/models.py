@@ -236,8 +236,6 @@ class Number(db.Model):  # 数量激励表
             check = Number.query.filter_by(number=number).first()
             if check:
                 if check.id != int(number_id):
-                    print(type(check.id))
-                    print(type(number_id))
                     return 400, '数量激励节点 %s 已存在!' % number
             down = Number.query.filter(Number.number.__lt__(number)).order_by(-Number.number).first()
             _down = down.ratio if down else 0
@@ -402,12 +400,12 @@ class DataBaseUtils:
             old = Node.query.filter_by(way_id=way_id, price=price).first()
             if old:
                 return 400, '策略中已包含相同底价的节点！'
-            down = Node.query.filter_by(way_id=way_id).filter(Node.price.__lt__(price)).order_by(-Node.price).first()
-            _down = down.percentage if down else 0
-            up = Node.query.filter_by(way_id=way_id).filter(Node.price.__gt__(price)).order_by(Node.price).first()
-            _up = up.percentage if up else float(100)
-            if float(percentage) <= _down or float(percentage) >= _up:
-                return 400, '底价 %s 的激励百分比应该在[%s-%s]区间内！' % (price, _down, _up)
+            # down = Node.query.filter_by(way_id=way_id).filter(Node.price.__lt__(price)).order_by(-Node.price).first()
+            # _down = down.percentage if down else 0
+            # up = Node.query.filter_by(way_id=way_id).filter(Node.price.__gt__(price)).order_by(Node.price).first()
+            # _up = up.percentage if up else float(100)
+            # if float(percentage) <= _down or float(percentage) >= _up:
+            #     return 400, '底价 %s 的激励百分比应该在[%s-%s]区间内！' % (price, _down, _up)
             new = Node(way_id=way_id, price=price, percentage=percentage)
             db.session.add(new)
             db.session.commit()
@@ -439,14 +437,14 @@ class DataBaseUtils:
             if old:  # 存在想要修改到的价格的节点
                 if old.id != int(node_id):
                     return 400, '存在价格为 %s 的节点，ID为%s' % (price, old.id)
-            down = Node.query.filter_by(way_id=way_id).filter(Node.id != node_id).filter(
-                Node.price.__lt__(price)).order_by(-Node.price).first()
-            _down = down.percentage if down else 0
-            up = Node.query.filter_by(way_id=way_id).filter(Node.id != node_id).filter(
-                Node.price.__gt__(price)).order_by(Node.price).first()
-            _up = up.percentage if up else float(100)
-            if float(percentage) <= _down or float(percentage) >= _up:
-                return 400, '底价 %s 的激励百分比应该在[%s-%s]区间内！' % (price, _down, _up)
+            # down = Node.query.filter_by(way_id=way_id).filter(Node.id != node_id).filter(
+            #     Node.price.__lt__(price)).order_by(-Node.price).first()
+            # _down = down.percentage if down else 0
+            # up = Node.query.filter_by(way_id=way_id).filter(Node.id != node_id).filter(
+            #     Node.price.__gt__(price)).order_by(Node.price).first()
+            # _up = up.percentage if up else float(100)
+            # if float(percentage) <= _down or float(percentage) >= _up:
+            #     return 400, '底价 %s 的激励百分比应该在[%s-%s]区间内！' % (price, _down, _up)
             Node.query.filter_by(id=node_id).update({"price": price, "percentage": percentage})
             db.session.commit()
             return 200, 'OK'
@@ -597,8 +595,8 @@ class DataBaseUtils:
         ret = {}
         rec = []
         for d in data:
-            excitation = round(DataBaseUtils.query_excitation(model_id=d.Model.id, price=d.Detail.sale_price,
-                                                              sale_time=d.Record.sale_time) * d.Detail.sale_number, 1)
+            excitation = DataBaseUtils.query_excitation(model_id=d.Model.id, price=d.Detail.sale_price,
+                                                              sale_time=d.Record.sale_time) * d.Detail.sale_number
             if d.Record.id not in rec:  # 此条明细属于新的记录
                 rec.append(d.Record.id)
                 ret[d.Record.id] = {"sale_time": d.Record.sale_time,
@@ -607,13 +605,13 @@ class DataBaseUtils:
                                     "model": [d.Model.name],
                                     "sale_price": [d.Detail.sale_price],
                                     "sale_number": [d.Detail.sale_number],
-                                    "sum": [d.Detail.sale_price * d.Detail.sale_number],
+                                    "sum": [round(d.Detail.sale_price * d.Detail.sale_number,1)],
                                     "excitation": [excitation]}
             else:  # 此条明细已存在记录
                 ret[d.Record.id]["model"].append(d.Model.name)
                 ret[d.Record.id]["sale_price"].append(d.Detail.sale_price)
                 ret[d.Record.id]["sale_number"].append(d.Detail.sale_number)
-                ret[d.Record.id]["sum"].append(d.Detail.sale_price * d.Detail.sale_number)
+                ret[d.Record.id]["sum"].append(round(d.Detail.sale_price * d.Detail.sale_number,1))
                 ret[d.Record.id]["excitation"].append(excitation)
         for r in ret:
             ret[r]['all'] = sum(ret[r]['sum'])
@@ -645,7 +643,7 @@ class DataBaseUtils:
         for node in all_lower_node:
             lower_price = node.price
             pre_exci = pre_exci + (higher_price - lower_price) * node.percentage
-            print('[%s-%s]%s=>%s' % (lower_price, higher_price, price, pre_exci))
+            # print('[%s-%s]%s=>%s' % (lower_price, higher_price, price, pre_exci))
             higher_price = node.price
         return pre_exci / 100
 

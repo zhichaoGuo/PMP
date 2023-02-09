@@ -16,18 +16,18 @@
                   </a>
               </li>
               <li class="breadcrumb-item"><a href="{{url_for('excitation.all_record')}}">销售记录</a></li>
-              <li class="breadcrumb-item active" aria-current="page">管理销售记录</li>
+              <li class="breadcrumb-item active" aria-current="page">管理销售订单</li>
           </ol>
       </nav>
       <div class="d-flex justify-content-between w-100 flex-wrap">
           <div class="mb-3 mb-lg-0">
-              <h1 class="h4">销售记录</h1>
+              <h1 class="h4">销售订单</h1>
               <div class="col-lg-4">
                           <!-- Button Modal -->
                   <div class="col-log-4 col-sm-3">
                     <button class="btn btn-secondary d-inline-flex align-items-center me-2 dropdown-toggle" data-bs-toggle="modal" data-bs-target="#modal-form" aria-haspopup="true" aria-expanded="false">
                         <svg class="icon icon-xs me-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
-                        新增销售记录
+                        新增销售订单
                     </button>
                   </div>
                           <!-- Modal Content -->
@@ -38,18 +38,17 @@
                                   <div class="card p-3 p-lg-4">
                                       <button type="button" class="btn-close ms-auto" data-bs-dismiss="modal" aria-label="Close"></button>
                                       <div class="text-center text-md-center mb-4 mt-md-0">
-                                          <h1 class="mb-0 h4">新增销售记录</h1>
+                                          <h1 class="mb-0 h4">新增销售订单</h1>
                                       </div>
                                       <form action="{{url_for('excitation.record')}}" class="mt-4" method="post">
                                           <!-- Form -->
                                           <div class="form-group mb-4">
-                                              <label for="m_name">新增销售记录备注</label>
+                                              <label for="m_name">新增销售订单号</label>
                                               <div class="input-group">
                                                   <span class="input-group-text" id="basic-addon1">
                                                       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pc-display-horizontal" viewBox="0 0 16 16"><path d="M1.5 0A1.5 1.5 0 0 0 0 1.5v7A1.5 1.5 0 0 0 1.5 10H6v1H1a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3a1 1 0 0 0-1-1h-5v-1h4.5A1.5 1.5 0 0 0 16 8.5v-7A1.5 1.5 0 0 0 14.5 0h-13Zm0 1h13a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-.5.5h-13a.5.5 0 0 1-.5-.5v-7a.5.5 0 0 1 .5-.5ZM12 12.5a.5.5 0 1 1 1 0 .5.5 0 0 1-1 0Zm2 0a.5.5 0 1 1 1 0 .5.5 0 0 1-1 0ZM1.5 12h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1 0-1ZM1 14.25a.25.25 0 0 1 .25-.25h5.5a.25.25 0 1 1 0 .5h-5.5a.25.25 0 0 1-.25-.25Z"/></svg>
-<!--                                                              <svg class="icon icon-xs text-gray-600" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"></path><path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"></path></svg>-->
                                                   </span>
-                                                  <input type="text" class="form-control" placeholder="example：NT" id="m_name" name="m_name" autofocus required>
+                                                  <input type="text" class="form-control" placeholder="example：ORD-00001-H1W2M3" id="m_name" name="m_name" autofocus required>
                                               </div>
                                           </div>
                                           <div class="form-group mb-4">
@@ -78,12 +77,12 @@
                                   <div class="card p-3 p-lg-4">
                                       <button type="button" class="btn-close ms-auto" data-bs-dismiss="modal" aria-label="Close"></button>
                                       <div class="text-center text-md-center mb-4 mt-md-0">
-                                          <h1 class="mb-0 h4">修改销售记录信息</h1>
+                                          <h1 class="mb-0 h4">修改销售订单信息</h1>
                                       </div>
                                       <form action="{{url_for('excitation.record')}}" class="mt-4" method="post">
                                           <!-- Form -->
                                           <div class="form-group mb-4">
-                                              <label for="e_id">销售记录ID</label>
+                                              <label for="e_id">销售订单ID</label>
                                               <div class="input-group">
                                                   <span class="input-group-text" id="basic-addon0">
                                                       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pc-display-horizontal" viewBox="0 0 16 16"><path d="M1.5 0A1.5 1.5 0 0 0 0 1.5v7A1.5 1.5 0 0 0 1.5 10H6v1H1a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3a1 1 0 0 0-1-1h-5v-1h4.5A1.5 1.5 0 0 0 16 8.5v-7A1.5 1.5 0 0 0 14.5 0h-13Zm0 1h13a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-.5.5h-13a.5.5 0 0 1-.5-.5v-7a.5.5 0 0 1 .5-.5ZM12 12.5a.5.5 0 1 1 1 0 .5.5 0 0 1-1 0Zm2 0a.5.5 0 1 1 1 0 .5.5 0 0 1-1 0ZM1.5 12h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1 0-1ZM1 14.25a.25.25 0 0 1 .25-.25h5.5a.25.25 0 1 1 0 .5h-5.5a.25.25 0 0 1-.25-.25Z"/></svg>
@@ -92,7 +91,7 @@
                                               </div>
                                           </div>
                                           <div class="form-group mb-4">
-                                              <label for="e_name">销售记录备注</label>
+                                              <label for="e_name">销售订单号</label>
                                               <div class="input-group">
                                                   <span class="input-group-text" id="basic-addon3">
                                                       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pc-display-horizontal" viewBox="0 0 16 16"><path d="M1.5 0A1.5 1.5 0 0 0 0 1.5v7A1.5 1.5 0 0 0 1.5 10H6v1H1a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3a1 1 0 0 0-1-1h-5v-1h4.5A1.5 1.5 0 0 0 16 8.5v-7A1.5 1.5 0 0 0 14.5 0h-13Zm0 1h13a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-.5.5h-13a.5.5 0 0 1-.5-.5v-7a.5.5 0 0 1 .5-.5ZM12 12.5a.5.5 0 1 1 1 0 .5.5 0 0 1-1 0Zm2 0a.5.5 0 1 1 1 0 .5.5 0 0 1-1 0ZM1.5 12h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1 0-1ZM1 14.25a.25.25 0 0 1 .25-.25h5.5a.25.25 0 1 1 0 .5h-5.5a.25.25 0 0 1-.25-.25Z"/></svg>
@@ -132,7 +131,7 @@
                   <thead class="thead-light">
                       <tr>
                           <th class="border-0 rounded-start">ID</th>
-                          <th class="border-0">销售记录备注</th>
+                          <th class="border-0">销售订单号</th>
                           <th class="border-0">销售时间</th>
                           <th class="border-0 rounded-end">操作</th>
                       </tr>
@@ -173,7 +172,7 @@
         var m_time = document.getElementById('m_time').value;
 
         if ((m_name == '')||(m_time=='')){
-            alert('新增销售记录备注或销售时间不能为空');
+            alert('新增销售订单号或销售时间不能为空');
             return 0;
             }
         var data = {};
